@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Button } from 'react-native';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+import React, { useState, useEffect } from "react";
+import { Text, View, StyleSheet, Button } from "react-native";
+import { BarCodeScanner } from "expo-barcode-scanner";
 import { searchProduct } from "../../Utils/UtilsGenerals";
 
 export default function Camera(props) {
@@ -10,19 +10,18 @@ export default function Camera(props) {
   useEffect(() => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
+      setHasPermission(status === "granted");
     })();
   }, []);
 
   const handleBarCodeScanned = async ({ type, data }) => {
-
+    setScanned(true);
     if (data) {
-        //si encuentro el codigo entonces
-        searchProduct(data, type).then((response) => {
-          props.props.navigation.navigate("Product", { product: response });
-        });
-      }
-
+      //si encuentro el codigo entonces
+      searchProduct(data, type).then(async (response) => {
+        props.props.navigation.navigate("Product", { product: response, scan:setScanned });
+      });
+    }
   };
 
   if (hasPermission === null) {
@@ -36,14 +35,14 @@ export default function Camera(props) {
     <View
       style={{
         flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-      }}>
+        flexDirection: "column",
+        justifyContent: "flex-end",
+      }}
+    >
       <BarCodeScanner
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={StyleSheet.absoluteFill}
       />
-
     </View>
   );
 }

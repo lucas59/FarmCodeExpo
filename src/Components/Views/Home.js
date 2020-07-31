@@ -1,18 +1,7 @@
-import React from 'react';
-import {View} from 'react-native';
-import {Text} from 'react-native-elements';
-//import {newSession} from '../../Utils/UtilsSession';
-import {
-  BallIndicator,
-  BarIndicator,
-  DotIndicator,
-  MaterialIndicator,
-  PacmanIndicator,
-  PulseIndicator,
-  SkypeIndicator,
-  UIActivityIndicator,
-  WaveIndicator,
-} from 'react-native-indicators';
+import React from "react";
+import { View } from "react-native";
+import { Text, Image } from "react-native-elements";
+import { SkypeIndicator } from "react-native-indicators";
 
 export default class Home extends React.Component {
   componentDidMount(props) {
@@ -20,7 +9,7 @@ export default class Home extends React.Component {
       this.props.navigation.replace('Scanner', {session: session});
     });*/
     var cont = 0;
-    this._interval = setInterval(() => {
+     this._interval = setInterval(() => {
       cont++;
       if (cont == 3) {
         this.props.navigation.replace('Scanner');
@@ -32,7 +21,7 @@ export default class Home extends React.Component {
     clearInterval(this._interval);
   }
 
-  static navigationOptions = ({navigation}) => ({
+  static navigationOptions = ({ navigation }) => ({
     header: null,
   });
 
@@ -41,22 +30,38 @@ export default class Home extends React.Component {
       <View
         style={{
           flex: 1,
-          backgroundColor: 'black',
-          backgroundColor: '#277FFF',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
+          backgroundColor: "black",
+          backgroundColor: "#277FFF",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <SkypeIndicator
-          style={{width: 1, maxHeight: 150, marginVertical: 30}}
+          style={{ width: 1, maxHeight: 150, marginVertical: 30 }}
           size={150}
           color="white"
         />
-        <Text style={{color: 'white', letterSpacing: 5}} h2>
+        <Text style={{ color: "white", letterSpacing: 5 }} h2>
           ETIQUETA
         </Text>
-        <Text style={{color: 'white', letterSpacing: 3}} h2>
+        <Text style={{ color: "white", letterSpacing: 3 }} h2>
           VIRTUAL
         </Text>
+
+        <View
+          style={{
+            marginTop: 30,
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ color: "white" }}>Powered by </Text>
+          <Image
+            style={{ width: 100, height: 30, resizeMode: "contain" }}
+            source={require("../../../assets/logo-ronda.jpeg")}
+          />
+        </View>
       </View>
     );
   }

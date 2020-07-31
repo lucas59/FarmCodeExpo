@@ -1,5 +1,6 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import { View, StyleSheet, Image } from "react-native";
+import {Text} from 'react-native-elements'
 import { styles } from "../../Styles/StylesGenerals";
 import { searchProduct } from "../../Utils/UtilsGenerals";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -41,16 +42,20 @@ export default class Scanner extends React.Component {
           ></Icon>
         </View>
       ),
+      headerRight: (
+        <View
+          style={{
+            alignContent: 'flex-end',
+            alignItems:'flex-end',
+            justifyContent: 'flex-end',
+            flexDirection:'row'
+          }}
+        >
+          <Text style={{fontSize:18, color:'#291670', fontWeight:'bold', bottom:0}}>Powered by</Text>
+          <Image style={{width:100, height:25, resizeMode:'contain'}} source={require("../../../assets/logo-ronda-header.jpeg")} />
+        </View>
+      ),
     };
-  };
-
-  onBarCodeRead = (e) => {
-    if (e.data) {
-      //si encuentro el codigo entonces
-      searchProduct(e.data, e.type).then((response) => {
-        this.props.navigation.navigate("Product", { product: response });
-      });
-    }
   };
 
   ConfirmScan = () => {
@@ -59,7 +64,6 @@ export default class Scanner extends React.Component {
 
   render() {
     const { step } = this.state;
-
     const stylesCamera = StyleSheet.create({
       container: {
         flex: 1,
