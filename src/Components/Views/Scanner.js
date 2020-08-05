@@ -1,14 +1,15 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, Image } from "react-native";
-import {Text} from 'react-native-elements'
+import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { styles } from "../../Styles/StylesGenerals";
-import { searchProduct } from "../../Utils/UtilsGenerals";
-import Icon from "react-native-vector-icons/Ionicons";
-import { log } from "react-native-reanimated";
+//import Icon from "react-native-vector-icons/Ionicons";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+
 import FooterScanner from "../Scanner/FooterScanner";
 import ConfirmScan from "../Scanner/ConfirmScan";
 import Camera from "../Scanner/Camera";
-import { Audio } from "expo-av";
+import LogoRonda from "../../../assets/logo-ronda.svg";
+import TorchIcon from "../Scanner/Torch";
+import ModalCodeManual from "../Scanner/ModalCodeManual";
 
 export default class Scanner extends React.Component {
   constructor(props) {
@@ -19,6 +20,7 @@ export default class Scanner extends React.Component {
       loading: false,
       scan: false,
       step: 0,
+      codeManual: false,
     };
   }
 
@@ -32,11 +34,12 @@ export default class Scanner extends React.Component {
             width: 80,
             alignContent: "center",
             justifyContent: "center",
+            flexDirection:'row'
           }}
         >
           <Icon
             style={{ width: 50, marginLeft: "auto", marginRight: "auto" }}
-            name="ios-menu"
+            name="menu"
             color="white"
             size={50}
           ></Icon>
@@ -45,14 +48,14 @@ export default class Scanner extends React.Component {
       headerRight: (
         <View
           style={{
-            alignContent: 'flex-end',
-            alignItems:'flex-end',
-            justifyContent: 'flex-end',
-            flexDirection:'row'
+            alignContent: "flex-end",
+            alignItems: "flex-end",
+            justifyContent: "flex-end",
+            flexDirection: "row",
+            marginHorizontal: 10,
           }}
         >
-          <Text style={{fontSize:18, color:'#291670', fontWeight:'bold', bottom:0}}>Powered by</Text>
-          <Image style={{width:100, height:25, resizeMode:'contain'}} source={require("../../../assets/logo-ronda-header.jpeg")} />
+          <LogoRonda width={90} height={90} />
         </View>
       ),
     };
@@ -62,8 +65,12 @@ export default class Scanner extends React.Component {
     this.setState({ step: 1 });
   };
 
+  changeCodeManual = () => {
+    this.setState({ codeManual: !this.state.codeManual });
+  };
+
   render() {
-    const { step } = this.state;
+    const { step, codeManual } = this.state;
     const stylesCamera = StyleSheet.create({
       container: {
         flex: 1,
@@ -90,9 +97,15 @@ export default class Scanner extends React.Component {
       <View style={stylesCamera.container}>
         {step == 0 && <ConfirmScan ConfirmScan={this.ConfirmScan} />}
 
-        {step == 1 && <Camera props={this.props} />}
+        {step == 1 && (
+          <Camera
+            codeManual={this.changeCodeManual}
+            visibleCodeManual={codeManual}
+            props={this.props}
+          />
+        )}
 
-        <FooterScanner />
+        <FooterScanner codeManual={this.changeCodeManual} />
       </View>
     );
   }

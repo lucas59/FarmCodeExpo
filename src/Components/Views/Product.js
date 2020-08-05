@@ -13,6 +13,7 @@ import { styles } from "../../Styles/StylesGenerals";
 import { readProduct } from "../../Utils/UtilsGenerals";
 import ItemInfo from "../Product/ItemInfo";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import LogoRonda from "../../../assets/logo-ronda.svg";
 
 export default class Product extends React.Component {
   constructor(props) {
@@ -48,6 +49,19 @@ export default class Product extends React.Component {
           ></Icon>
         </View>
       ),
+      headerRight: (
+        <View
+          style={{
+            alignContent: "flex-end",
+            alignItems: "flex-end",
+            justifyContent: "flex-end",
+            flexDirection: "row",
+            marginHorizontal: 10,
+          }}
+        >
+          <LogoRonda width={90} height={90} />
+        </View>
+      ),
     };
   };
 
@@ -63,53 +77,69 @@ export default class Product extends React.Component {
       <View style={{ flex: 1 }}>
         <ScrollView>
           <View style={{ alignContent: "center" }}>
-            <Image
-              style={{
-                width: 200,
-                height: 250,
-                flex: 1,
-                resizeMode: "contain",
-                marginRight: "auto",
-                marginLeft: "auto",
-              }}
-              source={{
-                uri: product.atributosBasicos.foto,
-              }}
-            ></Image>
+            {product.atributosBasicos.foto === null ? (
+              <Image
+                style={{
+                  width: 200,
+                  height: 250,
+                  flex: 1,
+                  resizeMode: "contain",
+                  marginRight: "auto",
+                  marginLeft: "auto",
+                }}
+                source={require("../../../assets/logo_medicamento_default.png")}
+              ></Image>
+            ) : (
+              <Image
+                style={{
+                  width: 200,
+                  height: 250,
+                  flex: 1,
+                  resizeMode: "contain",
+                  marginRight: "auto",
+                  marginLeft: "auto",
+                }}
+                source={{
+                  uri: product.atributosBasicos.foto,
+                }}
+              ></Image>
+            )}
           </View>
 
           <View
             style={{
-              width: "auto",
+              width: "90%",
               marginLeft: "auto",
               marginRight: "auto",
-              justifyContent: "center",
-              alignContent: "center",
+              justifyContent: "flex-start",
+              alignContent: "space-around",
             }}
           >
-            <ItemInfo value={product.atributosBasicos.descripcion} />
+            <View style={{marginLeft:20, marginVertical: 20,width:"100%"}}>
+              
+              <ItemInfo value={product.atributosBasicos.descripcion} />
 
-            <ItemInfo
-              value={product.formaFarmaceutica}
-              title={"Presentación: "}
-            />
-            <ItemInfo
-              value={
-                product.atributosBasicos.contenidoNeto.valor +
-                " " +
-                product.atributosBasicos.contenidoNeto.unidad
-              }
-              title={"Contenido: "}
-            />
-            <ItemInfo
-              value={product.viaAdministracion}
-              title={"Via de administración: "}
-            />
-
+              <ItemInfo
+                value={product.formaFarmaceutica}
+                title={"Presentación: "}
+              />
+              <ItemInfo
+                value={
+                  product.atributosBasicos.contenidoNeto.valor +
+                  " " +
+                  product.atributosBasicos.contenidoNeto.unidad
+                }
+                title={"Contenido: "}
+              />
+              <ItemInfo
+                value={product.viaAdministracion}
+                title={"Via de administración: "}
+              />
+            </View>
             <Divider
               style={{
                 backgroundColor: "gray",
-                marginVertical: 15,
+                marginVertical: 10,
                 marginRight: "auto",
                 marginLeft: "auto",
                 height: 2,
@@ -117,33 +147,42 @@ export default class Product extends React.Component {
               }}
             />
 
-            <View style={{ flexDirection: "row" }}>
+            <View style={{marginLeft:20, marginVertical: 20}}>
+
               <Image source={require("../../../assets/lab.png")} />
               <View>
                 <View>
+
                   <Text style={styles.itemInfo}>Principio Activo:</Text>
 
                   {product.principioActivo.map((val, i) => {
                     return (
-                      <>
-                      <Text style={{color:'gray', textAlign:'left', width:Dimensions.get('window').width/2}} >{val.nombre}</Text>
-                      <ItemInfo
-                  value={
-                    val.concentracion.valor +
-                    " " +
-                    val.concentracion.unidad +
-                    " En " +
-                    val.enMedio.valor +
-                    " " +
-                    val.enMedio.unidad
-                  }
-                  title={"Concentración: "}
-                />
-                      </>
-                    ) 
+                      <View style={{marginVertical:10}}>
+                        <Text
+                          style={{
+                            color: "gray",
+                            textAlign: "left",
+                            width: Dimensions.get("window").width / 2,
+                          }}
+                        >
+                          {val.nombre}
+                        </Text>
+                        <ItemInfo
+                          value={
+                            val.concentracion.valor +
+                            " " +
+                            val.concentracion.unidad +
+                            " En " +
+                            val.enMedio.valor +
+                            " " +
+                            val.enMedio.unidad
+                          }
+                          title={"Concentración: "}
+                        />
+                      </View>
+                    );
                   })}
                 </View>
-
               </View>
             </View>
 

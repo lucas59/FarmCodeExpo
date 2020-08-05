@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { Text, Image } from "react-native-elements";
 import { SkypeIndicator } from "react-native-indicators";
+import LogoRonda from "../../../assets/logo-ronda.svg";
 
 export default class Home extends React.Component {
   componentDidMount(props) {
@@ -9,12 +10,12 @@ export default class Home extends React.Component {
       this.props.navigation.replace('Scanner', {session: session});
     });*/
     var cont = 0;
-     this._interval = setInterval(() => {
+    this._interval = setInterval(() => {
       cont++;
       if (cont == 3) {
-        this.props.navigation.replace('Scanner');
+        this.props.navigation.replace("Scanner");
       }
-    }, 1000);
+    }, 500);
   }
 
   componentWillUnmount() {
@@ -57,10 +58,7 @@ export default class Home extends React.Component {
           }}
         >
           <Text style={{ color: "white" }}>Powered by </Text>
-          <Image
-            style={{ width: 100, height: 30, resizeMode: "contain" }}
-            source={require("../../../assets/logo-ronda.jpeg")}
-          />
+          <LogoRonda width={120} height={120} />
         </View>
       </View>
     );
