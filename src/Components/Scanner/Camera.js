@@ -76,7 +76,11 @@ export default function Camera(props) {
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         onTouchStart={true}
         autoFocus={true}
-        flashMode={Cam.Constants.FlashMode.on}
+        flashMode={
+          props.torchOn == true
+            ? Cam.Constants.FlashMode.torch
+            : Cam.Constants.FlashMode.off
+        }
         barCodeScannerSettings={{
           barcodeTypes: [
             BarCodeScanner.Constants.Type.ean8,

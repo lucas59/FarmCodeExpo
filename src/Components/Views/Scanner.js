@@ -10,6 +10,7 @@ import Camera from "../Scanner/Camera";
 import LogoRonda from "../../../assets/logo-ronda.svg";
 import TorchIcon from "../Scanner/Torch";
 import ModalCodeManual from "../Scanner/ModalCodeManual";
+import Torch from "react-native-torch";
 
 export default class Scanner extends React.Component {
   constructor(props) {
@@ -24,26 +25,59 @@ export default class Scanner extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.props.navigation.setParams({
+      handleTorch: this.handleTorch,
+    });
+  }
+
+  handleTorch = () => {
+    this.setState({ torchOn: !this.state.torchOn });
+  };
+
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
     return {
       headerStyle: styles.headerStyle,
       headerLeft: (
-        <View
-          style={{
-            width: 80,
-            alignContent: "center",
-            justifyContent: "center",
-            flexDirection:'row'
-          }}
-        >
-          <Icon
-            style={{ width: 50, marginLeft: "auto", marginRight: "auto" }}
-            name="menu"
-            color="white"
-            size={50}
-          ></Icon>
-        </View>
+        <React.Fragment>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.toggleDrawer();
+            }}
+            style={{
+              width: 80,
+              alignContent: "center",
+              justifyContent: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Icon
+              style={{ width: 50, marginLeft: 10, marginRight: 30 }}
+              name="menu"
+              color="white"
+              size={50}
+            ></Icon>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              width: 80,
+              alignContent: "center",
+              justifyContent: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Icon
+              onPress={() => {
+                params.handleTorch();
+              }}
+              style={{ width: 50, marginLeft: "auto", marginRight: "auto" }}
+              name="white-balance-sunny"
+              color="white"
+              size={40}
+            ></Icon>
+          </TouchableOpacity>
+        </React.Fragment>
       ),
       headerRight: (
         <View
@@ -70,7 +104,7 @@ export default class Scanner extends React.Component {
   };
 
   render() {
-    const { step, codeManual } = this.state;
+    const { step, codeManual, torchOn } = this.state;
     const stylesCamera = StyleSheet.create({
       container: {
         flex: 1,
@@ -99,6 +133,7 @@ export default class Scanner extends React.Component {
 
         {step == 1 && (
           <Camera
+            torchOn={torchOn}
             codeManual={this.changeCodeManual}
             visibleCodeManual={codeManual}
             props={this.props}

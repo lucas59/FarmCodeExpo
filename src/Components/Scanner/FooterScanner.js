@@ -2,6 +2,7 @@ import React from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import { styles } from "../../Styles/StylesGenerals";
 import Icon from "react-native-vector-icons/Ionicons";
+import { mute } from "../../Utils/UtilsGenerals";
 
 export default class FooterScanner extends React.Component {
   onPressCodeManual = () => {
@@ -16,7 +17,7 @@ export default class FooterScanner extends React.Component {
           style={{
             backgroundColor: "#281E74",
             flex: 1,
-            justifyContent: "center"
+            justifyContent: "center",
           }}
         >
           <Text style={{ color: "white", textAlign: "center" }}>
@@ -24,6 +25,7 @@ export default class FooterScanner extends React.Component {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
+          onPress={() => {mute()}}
           style={{
             backgroundColor: "#60A2F0",
             flex: 1,

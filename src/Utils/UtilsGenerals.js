@@ -75,3 +75,8 @@ export function readProduct(json) {
     });
   }
 }
+
+export function mute() {
+  Speech.stop();
+}
+
