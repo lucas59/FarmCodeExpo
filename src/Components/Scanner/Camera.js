@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, useFocusEffect } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
-import { searchProduct, errorProduct } from "../../Utils/UtilsProducts";
+import { searchProduct, errorProduct, notifyError, notifySound, notifySuccess } from "../../Utils/UtilsProducts";
 import { newSession } from "../../Utils/UtilsSession";
 import Icon from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal";
@@ -17,11 +17,32 @@ export default function Camera(props) {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
       setHasPermission(status === "granted");
     })();
+
+
+    props.props.navigation.addListener("willFocus", handleScanner, true);  
+    // every time you add it, you also remove it when props.location.pathname changes
+    return () => {
+      props.props.navigation.removeListener("willFocus", handleScanner, true);
+    }
+
   }, []);
 
+
+  
+
+  const handleScanner = async () => {
+    await setScanned(false);
+  }
+
   const handleBarCodeScanned = async ({ type, data }) => {
-    console.log(data);
+    //   mute();
     setScanned(true);
+    try {
+      await notifySuccess();  
+    } catch (error) {
+        console.log(error);
+    }
+    
     if (data) {
       //si encuentro el codigo entonces
       newSession().then((res) => {
@@ -29,19 +50,20 @@ export default function Camera(props) {
         if (res.data.code == 200) {
           const token = res.data.data.token;
           searchProduct(token, data).then((response) => {
-            if (response.data.code == 200) {
+            console.log(response);
+            if (response.data != undefined && response.data.code == 200) {
               if (response.data.data.tipo != null) {
                 const product = response.data.data;
                 console.log(product);
                 props.props.navigation.navigate("Product", {
                   product: product,
                   scan: setScanned,
+                  mute: props.mute
                 });
-                setScanned(false);
               } else {
                 if (!modalNotProduct) {
                   setModalNotProduct(true);
-
+                  notifyError();
                   errorProduct();
                   setInterval(() => {
                     setModalNotProduct(false);
@@ -49,11 +71,17 @@ export default function Camera(props) {
                   }, 4000);
                 }
               }
+            } else {
+
             }
-          });
+          }).catch((err) => {
+            console.log("Error: ", err);
+            setScanned(true);
+          })
         }
       });
     }
+
   };
 
   if (hasPermission === null) {
@@ -75,7 +103,7 @@ export default function Camera(props) {
         style={StyleSheet.absoluteFill}
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         onTouchStart={true}
-        autoFocus={true}
+        autoFocus={'on'}
         flashMode={
           props.torchOn == true
             ? Cam.Constants.FlashMode.torch
@@ -91,22 +119,7 @@ export default function Camera(props) {
           ],
         }}
       />
-      {/*}<BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={StyleSheet.absoluteFill}
-        barCodeTypes={["ean8", "ean13","ean14","upc12", "upc7"]}
-        
-        type={'back'}
-      />{*/}
 
-      {/*}  <Modal
-        animationType="slide"
-        transparent={true}
-        visible={!modalNotProduct}
-        onRequestClose={() => {
-          console.log("Modal has been closed.");
-        }}
-      >{*/}
       <Modal
         animationIn={"bounceIn"}
         animationOut={"bounceOut"}

@@ -25,6 +25,8 @@ export default function TorchIcon(props) {
 
   return (
     <TouchableOpacity
+    accessible={true}
+    accessibilityLabel={isTorch?"Apagar linterna":"Encender linterna"}
       onPress={async () => {
         console.log("prendiendo");
         try {

@@ -62,6 +62,7 @@ export default function ModalCodeManual(props) {
             style={{ width: "90%" }}
             value={code}
             onChangeText={(value) => setCode(value)}
+            
           />
           <Button
             title="Buscar"

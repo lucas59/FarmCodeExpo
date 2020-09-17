@@ -3,13 +3,26 @@ import { View, TouchableOpacity, Text } from "react-native";
 import { styles } from "../../Styles/StylesGenerals";
 import Icon from "react-native-vector-icons/Ionicons";
 import { mute } from "../../Utils/UtilsGenerals";
+import { alertManualCode } from "../../Utils/UtilsProducts";
+
 
 export default class FooterScanner extends React.Component {
+
+  constructor(props){
+    super(props);
+    this.state={
+      muteIcon:false
+    }
+  }
+
   onPressCodeManual = () => {
+    alertManualCode();
     this.props.codeManual();
   };
 
   render() {
+    const {muteIcon} = this.state
+    const {mute, changeMute} = this.props;
     return (
       <View style={styles.footer}>
         <TouchableOpacity
@@ -25,16 +38,19 @@ export default class FooterScanner extends React.Component {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {mute()}}
+          onPress={() => {changeMute(), this.setState({muteIcon:!this.state.muteIcon})}}
           style={{
-            backgroundColor: "#60A2F0",
+            backgroundColor: "black",
             flex: 1,
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Text
+          
+          {mute ? (
+            <React.Fragment>
+            <Text
             style={{
               color: "white",
               textAlign: "center",
@@ -44,11 +60,32 @@ export default class FooterScanner extends React.Component {
           >
             Silenciar
           </Text>
-          <Icon
+            <Icon
             style={{ marginLeft: 10, color: "white" }}
             size={30}
             name="md-volume-off"
           />
+          </React.Fragment>
+          ):(
+            <React.Fragment>
+            <Text
+            style={{
+              color: "white",
+              textAlign: "center",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            Activar volumen
+          </Text>
+            <Icon
+            style={{ marginLeft: 10, color: "white" }}
+            size={30}
+            name="md-volume-high"
+          />
+          </React.Fragment>
+          )}
+          
         </TouchableOpacity>
       </View>
     );

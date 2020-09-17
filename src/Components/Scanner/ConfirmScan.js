@@ -31,7 +31,6 @@ export default class ConfirmScan extends React.Component {
             ESCANEAR
           </Text>
         </TouchableOpacity>
-        <Text style={{margin: 10, fontSize: 20}}>¡Pulse aquí!</Text>
       </View>
     );
   }

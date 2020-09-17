@@ -10,7 +10,7 @@ import {
 import { Divider } from "react-native-elements";
 import { log } from "react-native-reanimated";
 import { styles } from "../../Styles/StylesGenerals";
-import { readProduct } from "../../Utils/UtilsGenerals";
+import { readProduct, mute } from "../../Utils/UtilsGenerals";
 import ItemInfo from "../Product/ItemInfo";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import LogoRonda from "../../../assets/logo-ronda.svg";
@@ -25,8 +25,12 @@ export default class Product extends React.Component {
   }
 
   componentDidMount() {
-    const { product } = this.state;
-    readProduct(product);
+    const { product} = this.state;
+    const mute = this.props.navigation.getParam('mute');
+   
+    if (mute) {
+      readProduct(product);    
+    }
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -68,6 +72,7 @@ export default class Product extends React.Component {
   goBack = () => {
     const { scanner } = this.state;
     scanner(false);
+    mute();
     this.props.navigation.goBack();
   };
 
@@ -87,7 +92,7 @@ export default class Product extends React.Component {
                   marginRight: "auto",
                   marginLeft: "auto",
                 }}
-                source={require("../../../assets/logo_medicamento_default.png")}
+                source={require("../../../assets/product-not-found.png")}
               ></Image>
             ) : (
               <Image
@@ -201,6 +206,8 @@ export default class Product extends React.Component {
 
         <View style={styles.footer}>
           <TouchableOpacity
+            accessible={true}
+            accessibilityLabel="Volver a escanear producto"
             onPress={this.goBack}
             style={{
               flex: 1,
@@ -213,21 +220,9 @@ export default class Product extends React.Component {
               name="barcode-scan"
             />
           </TouchableOpacity>
-
           <TouchableOpacity
-            style={{
-              flex: 1,
-              justifyContent: "center",
-            }}
-          >
-            <Icon
-              style={{ alignSelf: "center", color: "gray" }}
-              size={60}
-              name="file-document-box-multiple-outline"
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity
+          accessible={true}
+          accessibilityLabel="Detalles del producto"
             style={{
               flex: 1,
               justifyContent: "center",
