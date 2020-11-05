@@ -15,7 +15,7 @@ export default class ItemInfo extends React.Component {
       <View style={styles.container}>
         <Text style={{ color: "gray" }}>
           {this.props.title}{" "}
-          <Text style={{ fontWeight: "bold", fontSize: 16,color:'black' }}>
+          <Text style={{ fontWeight: "bold", fontSize: 16,color:'#0e2a47' }}>
             {this.props.value}
           </Text>
         </Text>

@@ -73,18 +73,25 @@ export function readProduct(json) {
     Speech.speak("Información adicional", { language: "es-419" });
     json.alertasyAvisos.forEach((element) => {
       Speech.speak(element.alerta, { language: "es-419" });
-    }); 
+    });
   }
+
+  if (json.empresa) {
+    Speech.speak("Empresa: " + json.empresa, {
+      language: "es-419",
+    });
+  }
+
 }
 
 export function mute() {
 
-    Speech.isSpeakingAsync().then((boolean) => {
-      console.log(boolean);
-      if (boolean) {
-        Speech.stop();
-      }
-    })
+  Speech.isSpeakingAsync().then((boolean) => {
+    console.log(boolean);
+    if (boolean) {
+      Speech.stop();
+    }
+  })
 }
 
 export function AskPermissionAudio() {
@@ -98,24 +105,41 @@ export function AskPermissionAudio() {
 }
 
 export function notifyOnCamera() {
-  return new Promise(async (res,rej)=>{
-     await Speech.speak("Cámara activada ", { language: "es-419" });
-     Vibration.vibrate(500,false);
+  return new Promise(async (res, rej) => {
+    await Speech.speak("Cámara activada ", { language: "es-419" });
+    Vibration.vibrate(500, false);
     res();
   })
 }
 
 export function notifiTorchOn() {
-  return new Promise(async (res,rej)=>{
+  return new Promise(async (res, rej) => {
     await Speech.speak("Linterna activada ", { language: "es-419" });
-   res();
- })
+    res();
+  })
 }
 
 export function notifiTorchOff() {
-  return new Promise(async (res,rej)=>{
+  return new Promise(async (res, rej) => {
     await Speech.speak("Linterna desactivada ", { language: "es-419" });
-   res();
- })
+    res();
+  })
 }
-  
+
+
+export function notifyConditionsShow() {
+  return new Promise(async (res, rej) => {
+    await Speech.speak("Terminos y condiciónes abiertos ", { language: "es-419" });
+    Vibration.vibrate(500, false);
+    res();
+  })
+}
+
+export function notifyConditionsHidden() {
+  return new Promise(async (res, rej) => {
+    await Speech.speak("Terminos y condiciónes cerrados ", { language: "es-419" });
+    Vibration.vibrate(500, false);
+    res();
+  })
+}
+

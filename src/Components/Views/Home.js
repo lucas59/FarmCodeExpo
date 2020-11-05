@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { Text, Image } from "react-native-elements";
 import { SkypeIndicator } from "react-native-indicators";
 import LogoRonda from "../../../assets/logo-ronda.svg";
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class Home extends React.Component {
   componentDidMount(props) {
@@ -10,10 +11,15 @@ export default class Home extends React.Component {
       this.props.navigation.replace('Scanner', {session: session});
     });*/
     var cont = 0;
-    this._interval = setInterval(() => {
+    this._interval = setInterval(async () => {
       cont++;
       if (cont == 3) {
-        this.props.navigation.replace("Scanner");
+        let condition = await AsyncStorage.getItem("conditions");
+        if (!condition) {
+          this.props.navigation.replace("Scanner");
+        } else {
+          this.props.navigation.replace("Conditions");
+        }
       }
     }, 500);
   }

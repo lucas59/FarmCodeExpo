@@ -10,9 +10,11 @@ import {
 import { Divider } from "react-native-elements";
 import { log } from "react-native-reanimated";
 import { styles } from "../../Styles/StylesGenerals";
-import { readProduct, mute } from "../../Utils/UtilsGenerals";
+import { readProduct, mute, notifyOnCamera } from "../../Utils/UtilsGenerals";
 import ItemInfo from "../Product/ItemInfo";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import IconFontisto from "react-native-vector-icons/Fontisto";
+
 import LogoRonda from "../../../assets/logo-ronda.svg";
 
 export default class Product extends React.Component {
@@ -25,11 +27,11 @@ export default class Product extends React.Component {
   }
 
   componentDidMount() {
-    const { product} = this.state;
+    const { product } = this.state;
     const mute = this.props.navigation.getParam('mute');
-   
+
     if (mute) {
-      readProduct(product);    
+      readProduct(product);
     }
   }
 
@@ -71,9 +73,10 @@ export default class Product extends React.Component {
 
   goBack = () => {
     const { scanner } = this.state;
-    scanner(false);
     mute();
-    this.props.navigation.goBack();
+    notifyOnCamera().then(() => {
+      this.props.navigation.goBack();
+    })
   };
 
   render() {
@@ -94,21 +97,22 @@ export default class Product extends React.Component {
                 }}
                 source={require("../../../assets/product-not-found.png")}
               ></Image>
+
             ) : (
-              <Image
-                style={{
-                  width: 200,
-                  height: 250,
-                  flex: 1,
-                  resizeMode: "contain",
-                  marginRight: "auto",
-                  marginLeft: "auto",
-                }}
-                source={{
-                  uri: product.atributosBasicos.foto,
-                }}
-              ></Image>
-            )}
+                <Image
+                  style={{
+                    width: 200,
+                    height: 250,
+                    flex: 1,
+                    resizeMode: "contain",
+                    marginRight: "auto",
+                    marginLeft: "auto",
+                  }}
+                  source={{
+                    uri: product.atributosBasicos.foto,
+                  }}
+                ></Image>
+              )}
           </View>
 
           <View
@@ -120,8 +124,8 @@ export default class Product extends React.Component {
               alignContent: "space-around",
             }}
           >
-            <View style={{marginLeft:20, marginVertical: 20,width:"100%"}}>
-              
+            <View style={{ marginLeft: 20, marginVertical: 20, width: "100%" }}>
+
               <ItemInfo value={product.atributosBasicos.descripcion} />
 
               <ItemInfo
@@ -152,51 +156,76 @@ export default class Product extends React.Component {
               }}
             />
 
-            <View style={{marginLeft:20, marginVertical: 20}}>
+            <View style={{ marginLeft: 20, marginVertical: 20 }}>
 
-              <Image source={require("../../../assets/lab.png")} />
+              <IconFontisto size={40} color="#0e2a47" name="laboratory" />
               <View>
-                <View>
 
-                  <Text style={styles.itemInfo}>Principio Activo:</Text>
+                <Text style={styles.itemInfo}>Principio Activo:</Text>
 
-                  {product.principioActivo.map((val, i) => {
-                    return (
-                      <View style={{marginVertical:10}}>
-                        <Text
-                          style={{
-                            color: "gray",
-                            textAlign: "left",
-                            width: Dimensions.get("window").width / 2,
-                          }}
-                        >
-                          {val.nombre}
-                        </Text>
-                        <ItemInfo
-                          value={
-                            val.concentracion.valor +
-                            " " +
-                            val.concentracion.unidad +
-                            " En " +
-                            val.enMedio.valor +
-                            " " +
-                            val.enMedio.unidad
-                          }
-                          title={"Concentración: "}
-                        />
-                      </View>
-                    );
-                  })}
-                </View>
+                {product.principioActivo.map((val, i) => {
+                  return (
+                    <View style={{ marginVertical: 10 }} key={i}>
+                      <Text
+                        style={{
+                          color: "gray",
+                          textAlign: "left",
+                          width: Dimensions.get("window").width / 2,
+                        }}
+                      >
+                        {val.nombre}
+                      </Text>
+                      <ItemInfo
+                        value={
+                          val.concentracion.valor +
+                          " " +
+                          val.concentracion.unidad +
+                          " En " +
+                          val.enMedio.valor +
+                          " " +
+                          val.enMedio.unidad
+                        }
+                        title={"Concentración: "}
+                      />
+                    </View>
+                  );
+                })}
               </View>
             </View>
+
+            {/*--------------*/}
+            <Divider
+              style={{
+                backgroundColor: "gray",
+                marginVertical: 10,
+                marginRight: "auto",
+                marginLeft: "auto",
+                height: 2,
+                width: 200,
+              }}
+            />
+            <View style={{ marginLeft: 20, marginVertical: 20 }}>
+
+              <Icon name="office-building" size={40} color="#0e2a47" />
+
+              <View>
+                <ItemInfo
+                  value={product.empresa
+                  }
+                  title={"Empresa: "}
+                />
+              </View>
+            </View>
+
+            {/*--------------*/}
+
 
             {product.alertasyAvisos.length > 0 && (
               <View style={{ marginTop: 10 }}>
                 <Text style={styles.itemInfo}>INFORMACIÓN ADICIONAL</Text>
                 {product.alertasyAvisos.map((val, i) => {
                   return (
-                    <ItemInfo style={styles.itemInfo} value={val.alerta} />
+                    <ItemInfo key={i} style={styles.itemInfo} value={val.alerta} />
                   );
                 })}
               </View>
@@ -208,7 +237,9 @@ export default class Product extends React.Component {
           <TouchableOpacity
             accessible={true}
             accessibilityLabel="Volver a escanear producto"
+            accessibilityLiveRegion="assertive"
             onPress={this.goBack}
+
             style={{
               flex: 1,
               justifyContent: "center",
@@ -221,8 +252,8 @@ export default class Product extends React.Component {
             />
           </TouchableOpacity>
           <TouchableOpacity
-          accessible={true}
-          accessibilityLabel="Detalles del producto"
+            accessible={true}
+            accessibilityLabel="Detalles del producto"
             style={{
               flex: 1,
               justifyContent: "center",

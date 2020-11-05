@@ -23,10 +23,11 @@ export function searchProduct(token, gtin) {
 
 export async function errorProduct() {
   return new Promise(async (res, rej) => {
-    Speech.speak("Error, el producto escaneado no esta disponible. Intente nuevamente.", {
-      language: "es-419",
+    await Speech.speak("Error, el producto escaneado no esta disponible. Intente nuevamente.", {
+      language: "es-419", onDone: () => {
+        res();
+      }
     });
-    res();
   });
 }
 
@@ -39,7 +40,11 @@ export function notifySound(value) {
 }
 
 export function notifyWelcome() {
-    Speech.speak("Bienvenido", { language: "es-419" });
+  Speech.speak("Bienvenido", { language: "es-419" });
+}
+
+export function notifyWelcomeConditions() {
+  Speech.speak("Términos y condiciónes", { language: "es-419" });
 }
 
 export function alertManualCode() {
@@ -56,7 +61,7 @@ export async function notifySuccess() {
   } catch (error) {
     // An error occurred!
   }
-  
+
 }
 
 export async function notifyError() {
@@ -69,5 +74,11 @@ export async function notifyError() {
   } catch (error) {
     // An error occurred!
   }
-  
+
+}
+
+export function notifyErrorServerConect() {
+  return new Promise(async (res,rej)=>{
+    await Speech.speak("Error de conexión con el servidor ", { language: "es-419",onDone:()=>{res()} });
+ })
 }

@@ -16,7 +16,8 @@ const styles = StyleSheet.create({
   },
   itemInfo: {
     paddingVertical: 2,
-    display:'flex'
+    display:'flex',
+    color:'gray'
   },
   footer: {
     height: 100,

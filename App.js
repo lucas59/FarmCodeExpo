@@ -11,15 +11,17 @@ import { createDrawerNavigator } from "react-navigation-drawer";
 import Home from "./src/Components/Views/Home";
 import Scanner from "./src/Components/Views/Scanner";
 import Product from "./src/Components/Views/Product";
+import Conditions from "./src/Components/Views/Conditions";
 
 const MainNavigator = createStackNavigator({
   Inicio: { screen: Home },
   Scanner: { screen: Scanner },
   Product: { screen: Product },
+  Conditions: { screen: Conditions }
 });
 
 const Drawer = createDrawerNavigator({
-  Escaner:{screen:MainNavigator},
+  Escaner: { screen: MainNavigator },
 });
 
 const Navigator = createSwitchNavigator({ Main: Drawer });

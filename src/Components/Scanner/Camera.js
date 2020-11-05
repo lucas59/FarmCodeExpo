@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, useFocusEffect } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
-import { searchProduct, errorProduct, notifyError, notifySound, notifySuccess } from "../../Utils/UtilsProducts";
+import { searchProduct, errorProduct, notifyError, notifySound, notifySuccess, notifyErrorServerConect } from "../../Utils/UtilsProducts";
 import { newSession } from "../../Utils/UtilsSession";
 import Icon from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal";
 import ModalCodeManual from "./ModalCodeManual";
 import { Camera as Cam } from "expo-camera";
+import * as Speech from "expo-speech";
 
 export default function Camera(props) {
   const [hasPermission, setHasPermission] = useState(null);
@@ -19,7 +20,7 @@ export default function Camera(props) {
     })();
 
 
-    props.props.navigation.addListener("willFocus", handleScanner, true);  
+    props.props.navigation.addListener("willFocus", handleScanner, true);
     // every time you add it, you also remove it when props.location.pathname changes
     return () => {
       props.props.navigation.removeListener("willFocus", handleScanner, true);
@@ -28,7 +29,7 @@ export default function Camera(props) {
   }, []);
 
 
-  
+
 
   const handleScanner = async () => {
     await setScanned(false);
@@ -37,51 +38,57 @@ export default function Camera(props) {
   const handleBarCodeScanned = async ({ type, data }) => {
     //   mute();
     setScanned(true);
-    try {
-      await notifySuccess();  
-    } catch (error) {
-        console.log(error);
-    }
-    
-    if (data) {
-      //si encuentro el codigo entonces
-      newSession().then((res) => {
-        // abro una session
-        if (res.data.code == 200) {
-          const token = res.data.data.token;
-          searchProduct(token, data).then((response) => {
-            console.log(response);
-            if (response.data != undefined && response.data.code == 200) {
-              if (response.data.data.tipo != null) {
-                const product = response.data.data;
-                console.log(product);
-                props.props.navigation.navigate("Product", {
-                  product: product,
-                  scan: setScanned,
-                  mute: props.mute
-                });
-              } else {
-                if (!modalNotProduct) {
-                  setModalNotProduct(true);
-                  notifyError();
-                  errorProduct();
-                  setInterval(() => {
-                    setModalNotProduct(false);
-                    setScanned(false);
-                  }, 4000);
+    notifySuccess().then(() => {
+
+      if (data) {
+        //si encuentro el codigo entonces
+        newSession().then((res) => {
+          // abro una session
+          if (res.data.code == 200) {
+            const token = res.data.data.token;
+            searchProduct(token, data).then((response) => {
+              if (response.data != undefined && response.data.code == 200) {
+                if (response.data.data.tipo != null) {
+                  const product = response.data.data;
+                  console.log(product);
+                  props.props.navigation.navigate("Product", {
+                    product: product,
+                    scan: setScanned,
+                    mute: props.mute
+                  });
+                } else {
+                  if (!modalNotProduct) {
+                    setModalNotProduct(true);
+                    notifyError();
+                    Speech.speak("Error, el producto escaneado no esta disponible. Intente nuevamente.", {
+                      language: "es-419", onDone: () => {
+                        setModalNotProduct(false);
+                        setScanned(false);
+                      }
+                    });
+                  }
                 }
               }
-            } else {
-
-            }
-          }).catch((err) => {
-            console.log("Error: ", err);
-            setScanned(true);
+            }).catch((err) => {
+              console.log("ErrorP: ", err);
+              notifyErrorServerConect().then(()=>{
+                setScanned(false); //vuelvo a setear el escanner
+              })
+            })
+          }
+        }).catch((err)=>{
+          notifyErrorServerConect().then(()=>{
+            setScanned(false);
           })
-        }
-      });
-    }
+          console.log("ErrorrL: ", err);
+          console.info(err)
+        });
+      }
 
+    }).catch((err) => {
+      console.log(err);
+      console.info(err)
+    })
   };
 
   if (hasPermission === null) {

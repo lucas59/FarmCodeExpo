@@ -8,6 +8,8 @@ export function newSession() {
       contrasena: "12345678",
     }).then((response) => {
       res(response);
+    }).catch((err)=>{
+      rej(err);
     });
   });
 }
