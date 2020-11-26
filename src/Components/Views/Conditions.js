@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, BackHandler } from "react-native";
 import { styles } from "../../Styles/StylesGenerals";
 //import Icon from "react-native-vector-icons/Ionicons";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -7,7 +7,8 @@ import { Button } from "react-native-elements";
 import OverlayTermsAndConditions from "../Conditions/OverlayTermsAndConditions";
 import AsyncStorage from "@react-native-community/async-storage";
 import { notifySuccess, notifyWelcomeConditions } from "../../Utils/UtilsProducts";
-import {notifyConditionsShow, notifyConditionsHidden} from '../../Utils/UtilsGenerals'
+import { notifyConditionsShow, notifyConditionsHidden } from '../../Utils/UtilsGenerals'
+import { StackActions } from "react-navigation";
 export default class Conditions extends React.Component {
     constructor(props) {
         super(props);
@@ -21,6 +22,7 @@ export default class Conditions extends React.Component {
         return {
             title: "Condiciones legales",
             headerStyle: styles.headerStyle,
+            headerTintColor: 'white',
         };
     };
 
@@ -28,7 +30,7 @@ export default class Conditions extends React.Component {
         this.setState({ conditions: !this.state.conditions })
         if (!this.state.conditions == true) {
             notifyConditionsShow();
-        }else{
+        } else {
             notifyConditionsHidden();
         }
     }
@@ -38,16 +40,20 @@ export default class Conditions extends React.Component {
         AsyncStorage.setItem('conditions', 'true').then((value) => {
             this.setState({ conditions: false });
             this.props.navigation.replace("Scanner");
+            const resetAction = StackActions.reset({
+
+                key:Escaner,
+                newKey: Escaner,
+                routeName:Scanner
+                
+                });
+                this.props.navigation.dispatch(resetAction);
         })
     }
-    componentDidMount(){
+    componentDidMount() {
         notifySuccess().then(() => {
             notifyWelcomeConditions();
-          })
-    }
-
-    onRejection = () =>{
-
+        })
     }
 
     render() {
@@ -69,8 +75,8 @@ export default class Conditions extends React.Component {
                     </View>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: "space-around", alignItems: 'center' }}>
-                    <Button style={{ minWidth: 170 }} buttonStyle={{ height: 50 }} titleStyle={{ fontWeight: 'bold' }} onPress={() => this.handleOverlay()} type='outline' title="Ver condiciones" />
-                    <Button style={{ minWidth: 150 }} buttonStyle={{ height: 50 }} titleStyle={{ fontWeight: 'bold' }} type="solid" title="Aceptar" onPress={() => this.handlePress()} />
+                    <Button buttonStyle={{ height: 50, minWidth: 170 }} titleStyle={{ fontWeight: 'bold' }} onPress={() => this.handleOverlay()} type='outline' title="Ver condiciones" />
+                    <Button buttonStyle={{ height: 50, minWidth: 150 }} titleStyle={{ fontWeight: 'bold' }} type="solid" title="Aceptar" onPress={() => this.handlePress()} />
                 </View>
                 <OverlayTermsAndConditions visible={conditions} handleOverlay={this.handleOverlay} onRejection={this.onRejection} onAcepted={this.handlePress} />
             </View>

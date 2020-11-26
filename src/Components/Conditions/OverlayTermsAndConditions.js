@@ -1,20 +1,29 @@
 import React from 'react'
-import { View, Text, Dimensions, StyleSheet } from 'react-native'
+import { View, Text, Dimensions, StyleSheet, Platform, BackHandler } from 'react-native'
 import { Button, Overlay } from 'react-native-elements'
 import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Entypo';
+import { notifyConditionsFail } from '../../Utils/UtilsSession';
 
 export default function OverlayTermsAndConditions(props) {
 
     const width = Dimensions.get('window').width;
     const heigth = Dimensions.get('window').height;
 
+    const closeApp = () => {
+        if (Platform.OS = 'android') {
+            notifyConditionsFail().then(() => {
+                BackHandler.exitApp()
+            })
+        }
+    }
+
     return (
         <Overlay visible={props.visible} overlayStyle={{ width: width - 20, height: heigth - 80 }} onBackdropPress={props.handleOverlay} >
             <View style={{ flex: 1 }}>
                 <View style={styles.header}>
                     <Icon name="text-document" color={"#6aa6ff"} size={60} />
-                    <View style={{ alignItems: 'left' }}>
+                    <View style={{ alignItems: 'center' }}>
                         <Text style={styles.title}>Términos y Condiciones</Text>
                         <Text style={styles.subtitle}>Actualizado 10 Noviembre, 2020</Text>
                     </View>
@@ -28,7 +37,7 @@ export default function OverlayTermsAndConditions(props) {
                     </Text>
                 </ScrollView>
                 <View style={styles.footer}>
-                    <Button style={{ minWidth: 170 }} buttonStyle={{ height: 50 }} titleStyle={{ fontWeight: 'bold' }} type='outline' title="Rechazar" onPress={props.onRejection.bind(this)} />
+                    <Button style={{ minWidth: 170 }} buttonStyle={{ height: 50 }} titleStyle={{ fontWeight: 'bold' }} type='outline' title="Rechazar" onPress={() => closeApp()} />
                     <Button style={{ minWidth: 150 }} buttonStyle={{ height: 50 }} titleStyle={{ fontWeight: 'bold' }} type="solid" title="Aceptar" onPress={props.onAcepted.bind(this)} />
                 </View>
             </View>
@@ -45,7 +54,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#bfbfbf',
         alignItems: 'center',
-        justifyContent:'flex-start'
+        justifyContent: 'flex-start'
     },
     title: {
         fontSize: 22,
@@ -62,7 +71,7 @@ const styles = StyleSheet.create({
     body: {
         marginHorizontal: 20,
         marginVertical: 10,
-        overflow:'scroll',
+        overflow: 'scroll',
     },
     conditions: {
         fontSize: 16,

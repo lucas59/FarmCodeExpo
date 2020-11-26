@@ -78,7 +78,7 @@ export async function notifyError() {
 }
 
 export function notifyErrorServerConect() {
-  return new Promise(async (res,rej)=>{
-    await Speech.speak("Error de conexión con el servidor ", { language: "es-419",onDone:()=>{res()} });
- })
+  return new Promise(async (res, rej) => {
+    await Speech.speak("Error de conexión con el servidor ", { language: "es-419", onDone: () => { res() } });
+  })
 }

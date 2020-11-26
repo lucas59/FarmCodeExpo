@@ -15,7 +15,7 @@ export default class Home extends React.Component {
       cont++;
       if (cont == 3) {
         let condition = await AsyncStorage.getItem("conditions");
-        if (!condition) {
+        if (condition) {
           this.props.navigation.replace("Scanner");
         } else {
           this.props.navigation.replace("Conditions");
