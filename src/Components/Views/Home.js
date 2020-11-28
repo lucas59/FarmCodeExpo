@@ -4,6 +4,7 @@ import { Text, Image } from "react-native-elements";
 import { SkypeIndicator } from "react-native-indicators";
 import LogoRonda from "../../../assets/logo-ronda.svg";
 import AsyncStorage from '@react-native-community/async-storage';
+import { notifyConditionsShow } from "../../Utils/UtilsGenerals";
 
 export default class Home extends React.Component {
   componentDidMount(props) {
@@ -18,7 +19,9 @@ export default class Home extends React.Component {
         if (condition) {
           this.props.navigation.replace("Scanner");
         } else {
-          this.props.navigation.replace("Conditions");
+          notifyConditionsShow().then(() => {
+            this.props.navigation.replace("Conditions");
+          })
         }
       }
     }, 500);

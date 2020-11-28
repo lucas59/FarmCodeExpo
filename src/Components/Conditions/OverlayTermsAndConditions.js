@@ -29,7 +29,7 @@ export default function OverlayTermsAndConditions(props) {
                     </View>
                 </View>
                 <ScrollView indicatorStyle="black" style={styles.body}>
-                    <Text style={styles.conditions}>
+                    <Text accessible={true} style={styles.conditions}>
                         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Impedit quae quo asperiores earum corrupti excepturi consectetur neque harum eligendi ratione at dolorem accusamus dolor, illo nobis et eveniet nulla quod?
                         Lorem ipsum, dolor sit amet consectetur adipisicing elit. Omnis, doloribus nesciunt. Est minus nobis non, cumque iste numquam fugiat et dignissimos debitis similique dolore ad reiciendis beatae assumenda fuga! In.
                         Lorem ipsum, dolor sit amet consectetur adipisicing elit. Error atque, corrupti praesentium repudiandae aspernatur assumenda sit? Ipsa minima excepturi et vero tempore, dolores tempora sed magni nobis eius, dolor reprehenderit!

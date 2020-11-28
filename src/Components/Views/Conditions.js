@@ -50,12 +50,7 @@ export default class Conditions extends React.Component {
                 this.props.navigation.dispatch(resetAction);
         })
     }
-    componentDidMount() {
-        notifySuccess().then(() => {
-            notifyWelcomeConditions();
-        })
-    }
-
+    
     render() {
         const { conditions } = this.state;
 

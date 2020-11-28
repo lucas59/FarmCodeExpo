@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  StyleSheet,
 } from "react-native";
 import { Divider } from "react-native-elements";
 import { log } from "react-native-reanimated";
@@ -16,6 +17,9 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import IconFontisto from "react-native-vector-icons/Fontisto";
 
 import LogoRonda from "../../../assets/logo-ronda.svg";
+import CardPreview from "../Product/CardPreview";
+import { findProduct } from "../../Utils/UtilsSession";
+import { notifyErrorServerConect } from "../../Utils/UtilsProducts";
 
 export default class Product extends React.Component {
   constructor(props) {
@@ -23,6 +27,7 @@ export default class Product extends React.Component {
     this.state = {
       product: props.navigation.getParam("product"),
       scanner: props.navigation.getParam("scan"),
+      parent: props.navigation.getParam("parent"),
     };
   }
 
@@ -79,8 +84,33 @@ export default class Product extends React.Component {
     })
   };
 
+  goToParent = () => {
+    this.props.navigation.goBack();
+  }
+
+  findProduct = (gtin) => {
+    console.log("Buscando: ", gtin);
+
+    findProduct(gtin).then(response => {
+      if (response !== null) {
+        const product = response.data;
+        console.log("PRODUCTO: ", product);
+        if (product.tipo) {
+          this.props.navigation.push("Product", {
+            product: product,
+            parent: true
+          });
+        }
+      }
+    })
+      .catch(err => {
+        console.log(err);
+        notifyErrorServerConect();
+      })
+  }
+
   render() {
-    const { product } = this.state;
+    const { product, parent } = this.state;
     return (
       <View style={{ flex: 1 }}>
         <ScrollView>
@@ -220,7 +250,7 @@ export default class Product extends React.Component {
             {/*--------------*/}
 
 
-            {product.alertasyAvisos.length > 0 && (
+            {product.alertasyAvisos && product.alertasyAvisos.length > 0 && (
               <View style={{ marginTop: 10 }}>
                 <Text style={styles.itemInfo}>INFORMACIÓN ADICIONAL</Text>
                 {product.alertasyAvisos.map((val, i) => {
@@ -231,6 +261,14 @@ export default class Product extends React.Component {
               </View>
             )}
           </View>
+
+          {/*
+          <View style={styles.kitContainer}>
+            <Text style={styles.kitTitleProduc}>Producto N 1</Text>
+            <CardPreview onSubmit={this.findProduct} name={"Remedio"} />
+          </View>
+*/}
+
         </ScrollView>
 
         <View style={styles.footer}>
@@ -251,6 +289,27 @@ export default class Product extends React.Component {
               name="barcode-scan"
             />
           </TouchableOpacity>
+
+          {parent && (
+
+            <TouchableOpacity
+              accessible={true}
+              accessibilityLabel="Detalles del producto"
+              onPress={this.goToParent}
+              style={{
+                flex: 1,
+                justifyContent: "center",
+              }}
+            >
+              <Icon
+                style={{ alignSelf: "center", color: "#0571c3" }}
+                size={60}
+                name="arrow-left"
+              />
+            </TouchableOpacity>
+
+          )}
+
           <TouchableOpacity
             accessible={true}
             accessibilityLabel="Detalles del producto"
@@ -270,3 +329,4 @@ export default class Product extends React.Component {
     );
   }
 }
+

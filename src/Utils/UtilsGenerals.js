@@ -1,7 +1,8 @@
 import { arre } from "./jsonPruebas";
 import * as Speech from "expo-speech";
-import { AsyncStorage, Alert, Vibration } from "react-native";
+import { AsyncStorage, Alert, Vibration, AccessibilityInfo, Settings } from "react-native";
 import { Audio } from 'expo-av';
+
 
 export async function searchProduct(code, type) {
   return new Promise(async (res, rej) => {
@@ -33,6 +34,7 @@ export function readProduct(json) {
     // nombre comercial
     language: "es-419",
   });
+
   Speech.speak("Presentación: " + json.formaFarmaceutica, {
     language: "es-419",
   });
@@ -129,16 +131,22 @@ export function notifiTorchOff() {
 
 export function notifyConditionsShow() {
   return new Promise(async (res, rej) => {
-    await Speech.speak("Terminos y condiciónes abiertos ", { language: "es-419" });
-    Vibration.vibrate(500, false);
+    const talkback = await AccessibilityInfo.isScreenReaderEnabled()
+    if (talkback) {
+      await Speech.speak("Terminos y condiciónes abiertos ", { language: "es-419" });
+      Vibration.vibrate(500, false);
+    }
     res();
   })
 }
 
 export function notifyConditionsHidden() {
   return new Promise(async (res, rej) => {
-    await Speech.speak("Terminos y condiciónes cerrados ", { language: "es-419" });
-    Vibration.vibrate(500, false);
+    const talkback = await AccessibilityInfo.isScreenReaderEnabled();
+    if (talkback) {
+      await Speech.speak("Terminos y condiciónes cerrados ", { language: "es-419" });
+      Vibration.vibrate(500, false);
+    }
     res();
   })
 }

@@ -21,7 +21,7 @@ export default class Scanner extends React.Component {
       scan: false,
       step: 0,
       codeManual: false,
-      mute: false
+      mute: true
     };
   }
 

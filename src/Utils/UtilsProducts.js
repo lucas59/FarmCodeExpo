@@ -2,6 +2,7 @@ import { URL_PPRODUCTO } from "../Config/Config";
 import Axios from "axios";
 import * as Speech from "expo-speech";
 import { Audio } from 'expo-av';
+import { AccessibilityInfo } from "react-native";
 
 export function searchProduct(token, gtin) {
   return new Promise((res, rej) => {
@@ -39,8 +40,11 @@ export function notifySound(value) {
   }
 }
 
-export function notifyWelcome() {
-  Speech.speak("Bienvenido", { language: "es-419" });
+export async function notifyWelcome() {
+  const talkback = await AccessibilityInfo.isScreenReaderEnabled()
+  if (talkback) {
+    Speech.speak("Bienvenido", { language: "es-419" });
+  }
 }
 
 export function notifyWelcomeConditions() {

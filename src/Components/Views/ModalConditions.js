@@ -63,19 +63,19 @@ export default class ModalConditions extends React.Component {
             }
         })
 
-        const { width, heigth } = this.state
+        const { width } = this.state
         return (
             <View style={{ width: width - 20, marginTop: 10, marginRight: 'auto', marginLeft: 'auto', justifyContent: 'center', alignItems: 'center', flex: 1 }} >
                 <View style={{ flex: 1 }}>
                     <View style={styles.header}>
                         <Icon name="text-document" color={"#6aa6ff"} size={60} />
                         <View style={{ alignItems: "flex-start" }}>
-                            <Text style={styles.title}>Términos y Condiciones</Text>
+                            <Text accessibility={true} style={styles.title}>Términos y Condiciones</Text>
                             <Text style={styles.subtitle}>Actualizado 10 Noviembre, 2020</Text>
                         </View>
                     </View>
                     <ScrollView indicatorStyle="black" style={styles.body}>
-                        <Text style={styles.conditions}>
+                        <Text accessibility={true} style={styles.conditions}>
                             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Impedit quae quo asperiores earum corrupti excepturi consectetur neque harum eligendi ratione at dolorem accusamus dolor, illo nobis et eveniet nulla quod?
                             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Omnis, doloribus nesciunt. Est minus nobis non, cumque iste numquam fugiat et dignissimos debitis similique dolore ad reiciendis beatae assumenda fuga! In.
                             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Error atque, corrupti praesentium repudiandae aspernatur assumenda sit? Ipsa minima excepturi et vero tempore, dolores tempora sed magni nobis eius, dolor reprehenderit!

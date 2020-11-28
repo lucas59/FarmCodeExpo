@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, useFocusEffect } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { searchProduct, errorProduct, notifyError, notifySound, notifySuccess, notifyErrorServerConect } from "../../Utils/UtilsProducts";
-import { newSession } from "../../Utils/UtilsSession";
+import { findProduct, newSession } from "../../Utils/UtilsSession";
 import Icon from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal";
 import ModalCodeManual from "./ModalCodeManual";
@@ -42,47 +42,82 @@ export default function Camera(props) {
 
       if (data) {
         //si encuentro el codigo entonces
-        newSession().then((res) => {
-          // abro una session
-          if (res.data.code == 200) {
-            const token = res.data.data.token;
-            searchProduct(token, data).then((response) => {
-              if (response.data != undefined && response.data.code == 200) {
-                if (response.data.data.tipo != null) {
-                  const product = response.data.data;
-                  console.log(product);
-                  props.props.navigation.navigate("Product", {
-                    product: product,
-                    scan: setScanned,
-                    mute: props.mute
+
+        findProduct(data)
+          .then(response => {
+            if (response !== null) {
+              const product = response.data;
+              if (product.tipo) {
+                props.props.navigation.navigate("Product", {
+                  product: product,
+                  scan: setScanned,
+                  mute: props.mute
+                });
+              } else {
+                if (!modalNotProduct) {
+                  setModalNotProduct(true);
+                  notifyError();
+                  Speech.speak("Error, el producto escaneado no esta disponible. Intente nuevamente.", {
+                    language: "es-419", onDone: () => {
+                      setModalNotProduct(false);
+                      setScanned(false);
+                    }
                   });
-                } else {
-                  if (!modalNotProduct) {
-                    setModalNotProduct(true);
-                    notifyError();
-                    Speech.speak("Error, el producto escaneado no esta disponible. Intente nuevamente.", {
-                      language: "es-419", onDone: () => {
-                        setModalNotProduct(false);
-                        setScanned(false);
-                      }
-                    });
-                  }
                 }
               }
-            }).catch((err) => {
-              console.log("ErrorP: ", err);
-              notifyErrorServerConect().then(()=>{
-                setScanned(false); //vuelvo a setear el escanner
-              })
-            })
-          }
-        }).catch((err)=>{
-          notifyErrorServerConect().then(()=>{
-            setScanned(false);
+            }
           })
-          console.log("ErrorrL: ", err);
-          console.info(err)
-        });
+          .catch(err => {
+            console.log(err);
+            notifyErrorServerConect().then(() => {
+              setScanned(false);
+            })
+          })
+
+
+        /*     newSession().then((res) => {
+       // abro una session
+       if (res.data.code == 200) {
+         const token = res.data.data.token;
+         searchProduct(token, data).then((response) => {
+           if (response.data != undefined && response.data.code == 200) {
+             if (response.data.data.tipo != null) {
+               const product = response.data.data;
+               console.log(product);
+               props.props.navigation.navigate("Product", {
+                 product: product,
+                 scan: setScanned,
+                 mute: props.mute
+               });
+             } else {
+               if (!modalNotProduct) {
+                 setModalNotProduct(true);
+                 notifyError();
+                 Speech.speak("Error, el producto escaneado no esta disponible. Intente nuevamente.", {
+                   language: "es-419", onDone: () => {
+                     setModalNotProduct(false);
+                     setScanned(false);
+                   }
+                 });
+               }
+             }
+           }
+         }).catch((err) => {
+           console.log("ErrorP: ", err);
+           notifyErrorServerConect().then(()=>{
+             setScanned(false); //vuelvo a setear el escanner
+           })
+         })
+       }
+     }).catch((err)=>{
+       notifyErrorServerConect().then(()=>{
+         setScanned(false);
+       })
+       console.log("ErrorrL: ", err);
+       console.info(err)
+     });
+     
+     */
       }
 
     }).catch((err) => {
@@ -180,10 +215,10 @@ export default function Camera(props) {
               style={{ fontSize: 35, fontWeight: "bold", color: "#343a40" }}
             >
               Oops...
-            </Text>
+    </Text>
             <Text style={{ marginTop: 20, fontSize: 20, color: "#343a40" }}>
               Producto no disponible.
-            </Text>
+    </Text>
           </View>
         </View>
       </Modal>
