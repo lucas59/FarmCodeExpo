@@ -63,3 +63,30 @@ export function findProduct(gtin) {
     });
   })
 }
+
+
+export async function findProductFromKit(product) {
+  return new Promise(async (res, rej) => {
+
+    let kit = [];
+    if (product && product.kitPromocional.length > 0) {
+      for (let index = 0; index < product.kitPromocional.length; index++) {
+        const element = product.kitPromocional[index];
+        findProduct(element.gtin).then(response => {
+          if (response) {
+            const newproduct = response.data;
+            kit.push(newproduct);
+          }
+
+          if (product.kitPromocional.length === kit.length) {
+            res(kit)
+          }
+
+        })
+          .catch(err => {
+            console.log(err);
+          })
+      }
+    }
+  })
+}

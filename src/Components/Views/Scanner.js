@@ -10,6 +10,7 @@ import Camera from "../Scanner/Camera";
 import LogoRonda from "../../../assets/logo-ronda.svg";
 import { notifySound, notifyWelcome, notifySuccess, notifyError } from "../../Utils/UtilsProducts";
 import { notifiTorchOff, notifiTorchOn, notifyOnCamera } from "../../Utils/UtilsGenerals";
+import { log } from "react-native-reanimated";
 
 
 export default class Scanner extends React.Component {
@@ -29,11 +30,11 @@ export default class Scanner extends React.Component {
     this.props.navigation.setParams({
       handleTorch: this.handleTorch,
     });
-
     notifySuccess().then(() => {
       notifyWelcome();
     })
-
+    
+    console.log(this.props.navigation.param);
   }
 
   handleTorch = () => {
@@ -49,7 +50,7 @@ export default class Scanner extends React.Component {
     } else {
       notifiTorchOff();
     }
-    
+
   };
 
   static navigationOptions = ({ navigation }) => {

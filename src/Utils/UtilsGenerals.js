@@ -49,6 +49,12 @@ export function readProduct(json) {
     language: "es-419",
   });
 
+  if (json.kitPromocional.length > 0) {
+    Speech.speak("Productos contenidos en este KIT : " + json.viaAdministracion, {
+      language: "es-419",
+    });
+  }
+
   Speech.speak("Principio activo:  ", {
     language: "es-419",
   });

@@ -8,6 +8,7 @@ import Modal from "react-native-modal";
 import ModalCodeManual from "./ModalCodeManual";
 import { Camera as Cam } from "expo-camera";
 import * as Speech from "expo-speech";
+import { log } from "react-native-reanimated";
 
 export default function Camera(props) {
   const [hasPermission, setHasPermission] = useState(null);
@@ -23,7 +24,8 @@ export default function Camera(props) {
     props.props.navigation.addListener("willFocus", handleScanner, true);
     // every time you add it, you also remove it when props.location.pathname changes
     return () => {
-      props.props.navigation.removeListener("willFocus", handleScanner, true);
+      console.log(props.props.navigation);
+     // props.props.navigation.removeListener("willFocus", handleScanner, true);
     }
 
   }, []);

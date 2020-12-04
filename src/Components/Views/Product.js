@@ -5,8 +5,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  Dimensions,
-  StyleSheet,
+  Dimensions
 } from "react-native";
 import { Divider } from "react-native-elements";
 import { log } from "react-native-reanimated";
@@ -15,10 +14,12 @@ import { readProduct, mute, notifyOnCamera } from "../../Utils/UtilsGenerals";
 import ItemInfo from "../Product/ItemInfo";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import IconFontisto from "react-native-vector-icons/Fontisto";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import * as Speech from "expo-speech";
 
 import LogoRonda from "../../../assets/logo-ronda.svg";
 import CardPreview from "../Product/CardPreview";
-import { findProduct } from "../../Utils/UtilsSession";
+import { findProduct, findProductFromKit } from "../../Utils/UtilsSession";
 import { notifyErrorServerConect } from "../../Utils/UtilsProducts";
 
 export default class Product extends React.Component {
@@ -28,16 +29,26 @@ export default class Product extends React.Component {
       product: props.navigation.getParam("product"),
       scanner: props.navigation.getParam("scan"),
       parent: props.navigation.getParam("parent"),
+      mute: props.navigation.getParam('mute'),
+      loading: false,
+      kitProducts: []
     };
   }
 
-  componentDidMount() {
-    const { product } = this.state;
-    const mute = this.props.navigation.getParam('mute');
+  uploadKit = () => {
+    const { product } = this.state
+    findProductFromKit(product).then(async (arr) => {
+      this.setState({ kitProducts: arr })
+    })
+  }
 
+  componentDidMount() {
+    const { product, mute } = this.state;
     if (mute) {
       readProduct(product);
     }
+
+    this.uploadKit();
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -77,10 +88,15 @@ export default class Product extends React.Component {
   };
 
   goBack = () => {
-    const { scanner } = this.state;
+    const { scanner, parent } = this.state;
     mute();
     notifyOnCamera().then(() => {
-      this.props.navigation.goBack();
+      if (parent) {
+        this.props.navigation.replace("Scanner");
+      } else {
+        this.props.navigation.goBack();
+      }
+
     })
   };
 
@@ -88,31 +104,48 @@ export default class Product extends React.Component {
     this.props.navigation.goBack();
   }
 
+
+  toProductDetails = (product) => {
+    Speech.stop();
+    this.props.navigation.push("Product", {
+      product: product,
+      parent: true,
+      mute: mute
+    });
+  }
+
   findProduct = (gtin) => {
     console.log("Buscando: ", gtin);
-
+    const { mute } = this.state;
+    this.setState({ loading: true })
     findProduct(gtin).then(response => {
       if (response !== null) {
         const product = response.data;
         console.log("PRODUCTO: ", product);
+        Speech.stop();
         if (product.tipo) {
           this.props.navigation.push("Product", {
             product: product,
-            parent: true
+            parent: true,
+            mute: mute
           });
+          this.setState({ loading: false })
         }
       }
     })
       .catch(err => {
         console.log(err);
         notifyErrorServerConect();
+        this.setState({ loading: false })
       })
   }
 
   render() {
-    const { product, parent } = this.state;
+    const { product, parent, loading, kitProducts } = this.state;
+    console.log(kitProducts);
+    let block = loading ? "none" : "auto";
     return (
-      <View style={{ flex: 1 }}>
+      <View pointerEvents={block} style={{ flex: 1 }}>
         <ScrollView>
           <View style={{ alignContent: "center" }}>
             {product.atributosBasicos.foto === null ? (
@@ -155,7 +188,7 @@ export default class Product extends React.Component {
             }}
           >
             <View style={{ marginLeft: 20, marginVertical: 20, width: "100%" }}>
-
+              <MaterialCommunityIcons size={40} color="#0e2a47" name="medical-bag" />
               <ItemInfo value={product.atributosBasicos.descripcion} />
 
               <ItemInfo
@@ -174,6 +207,12 @@ export default class Product extends React.Component {
                 value={product.viaAdministracion}
                 title={"Via de administración: "}
               />
+              {product.kitPromocional.length > 0 && (
+                <ItemInfo
+                  value={product.kitPromocional.length}
+                  title={"Productos contenidos en este KIT: "}
+                />
+              )}
             </View>
             <Divider
               style={{
@@ -262,14 +301,27 @@ export default class Product extends React.Component {
             )}
           </View>
 
-          {/*
+
+
+
           <View style={styles.kitContainer}>
-            <Text style={styles.kitTitleProduc}>Producto N 1</Text>
-            <CardPreview onSubmit={this.findProduct} name={"Remedio"} />
+
+            {kitProducts.map((value, index) => (
+              <>
+                <Text style={styles.kitTitleProduc}>Producto N {index + 1}</Text>
+                <CardPreview gtin={value.atributosBasicos.gtin} image={value.atributosBasicos.foto} onSubmit={() => this.toProductDetails(value)} name={value.atributosBasicos.descripcion} />
+              </>
+
+            ))
+            }
           </View>
-*/}
 
         </ScrollView>
+
+
+
+
+
 
         <View style={styles.footer}>
           <TouchableOpacity
@@ -302,7 +354,7 @@ export default class Product extends React.Component {
               }}
             >
               <Icon
-                style={{ alignSelf: "center", color: "#0571c3" }}
+                style={{ alignSelf: "center", color: "#0e2a47" }}
                 size={60}
                 name="arrow-left"
               />
@@ -325,7 +377,7 @@ export default class Product extends React.Component {
             />
           </TouchableOpacity>
         </View>
-      </View>
+      </View >
     );
   }
 }

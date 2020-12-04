@@ -2,16 +2,21 @@ import React from 'react'
 import { StyleSheet, View, Text, Image, Button } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
-export default function CardPreview({ name, onSubmit }) {
+export default function CardPreview({ name, onSubmit, gtin, image }) {
     return (
         <View style={styles.card}>
             <View style={styles.content}>
                 <View style={styles.logoContainer}>
-                    <Image style={styles.logo} source={require("../../../assets/product-not-found.png")} />
+                    {image ? (
+                        <Image style={styles.logo} source={image} />
+                    ):(
+                        <Image style={styles.logo} source={require("../../../assets/product-not-found.png")} />
+                    )}
+
                 </View>
                 <View style={styles.body}>
                     <Text style={styles.label}>{name}</Text>
-                    <TouchableOpacity onPress={()=> onSubmit("7730215000276")} style={styles.buttonShow}>
+                    <TouchableOpacity onPress={() => onSubmit(gtin)} style={styles.buttonShow}>
                         <Text style={styles.textButton}>Ver Producto</Text>
                     </TouchableOpacity>
                 </View>
