@@ -6,6 +6,7 @@ import { AccessibilityInfo } from "react-native";
 
 export function searchProduct(token, gtin) {
   return new Promise((res, rej) => {
+    console.log(URL_PPRODUCTO + gtin);
     try {
       Axios.get(URL_PPRODUCTO + gtin, {
         headers: { Authorization: `Bearer ${token}` },

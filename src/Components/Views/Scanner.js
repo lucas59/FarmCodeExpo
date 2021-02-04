@@ -22,7 +22,8 @@ export default class Scanner extends React.Component {
       scan: false,
       step: 0,
       codeManual: false,
-      mute: true
+      mute: true,
+      searching: false
     };
   }
 
@@ -34,7 +35,7 @@ export default class Scanner extends React.Component {
       notifyWelcome();
     })
     
-    console.log(this.props.navigation.param);
+    console.log("Params: ",this.props.navigation.param);
   }
 
   handleTorch = () => {
@@ -128,6 +129,10 @@ export default class Scanner extends React.Component {
     this.setState({ codeManual: !this.state.codeManual, step: 1 });
   };
 
+  changeSearching = (value) => {
+      this.setState({searching: value})
+  }
+
   changeMute = () => {
     this.setState({ mute: !this.state.mute })
     notifySound(!this.state.mute);
@@ -135,7 +140,7 @@ export default class Scanner extends React.Component {
 
 
   render() {
-    const { step, codeManual, torchOn } = this.state;
+    const { step, codeManual, torchOn, searching } = this.state;
     const stylesCamera = StyleSheet.create({
       container: {
         flex: 1,
@@ -170,10 +175,11 @@ export default class Scanner extends React.Component {
             visibleCodeManual={codeManual}
             props={this.props}
             mute={this.state.mute}
+            changeSearching={this.changeSearching}
           />
         )}
 
-        <FooterScanner changeMute={this.changeMute} mute={this.state.mute} codeManual={this.changeCodeManual} />
+        <FooterScanner searching={searching} changeMute={this.changeMute} mute={this.state.mute} codeManual={this.changeCodeManual} />
       </View>
     );
   }

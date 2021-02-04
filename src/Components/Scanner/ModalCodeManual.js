@@ -13,12 +13,12 @@ export default function ModalCodeManual(props) {
         data: code,
       };
       
-      props.codeManual();
+      //props.codeManual();
       Keyboard.dismiss();
       props.onSearch(params);
     }
   };
-
+  console.log(props.visible);
   return (
     <Modal
       animationIn={"bounceIn"}

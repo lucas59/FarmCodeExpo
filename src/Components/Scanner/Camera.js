@@ -8,7 +8,6 @@ import Modal from "react-native-modal";
 import ModalCodeManual from "./ModalCodeManual";
 import { Camera as Cam } from "expo-camera";
 import * as Speech from "expo-speech";
-import { log } from "react-native-reanimated";
 
 export default function Camera(props) {
   const [hasPermission, setHasPermission] = useState(null);
@@ -25,7 +24,7 @@ export default function Camera(props) {
     // every time you add it, you also remove it when props.location.pathname changes
     return () => {
       console.log(props.props.navigation);
-     // props.props.navigation.removeListener("willFocus", handleScanner, true);
+      // props.props.navigation.removeListener("willFocus", handleScanner, true);
     }
 
   }, []);
@@ -39,22 +38,28 @@ export default function Camera(props) {
 
   const handleBarCodeScanned = async ({ type, data }) => {
     //   mute();
+    props.changeSearching(true);
+    console.log(props.changeSearching);
     setScanned(true);
+    console.log("data: ", data);
+    if (props.visibleCodeManual) {
+      props.codeManual()
+    }
+
     notifySuccess().then(() => {
-
       if (data) {
-        //si encuentro el codigo entonces
-
+        console.log(data);
         findProduct(data)
           .then(response => {
             if (response !== null) {
               const product = response.data;
               if (product.tipo) {
-                props.props.navigation.navigate("Product", {
+                props.props.navigation.push("Product", {
                   product: product,
                   scan: setScanned,
                   mute: props.mute
                 });
+                props.changeSearching(false);
               } else {
                 if (!modalNotProduct) {
                   setModalNotProduct(true);
@@ -65,15 +70,17 @@ export default function Camera(props) {
                       setScanned(false);
                     }
                   });
+                  props.changeSearching(false);
                 }
               }
             }
           })
           .catch(err => {
-            console.log(err);
+            console.log("Error: ", err);
             notifyErrorServerConect().then(() => {
               setScanned(false);
             })
+            props.changeSearching(false);
           })
 
 

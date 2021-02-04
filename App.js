@@ -1,8 +1,7 @@
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import {
   createAppContainer,
-  SafeAreaView,
   createSwitchNavigator,
 } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
@@ -12,9 +11,11 @@ import Scanner from "./src/Components/Views/Scanner";
 import Product from "./src/Components/Views/Product";
 import Conditions from "./src/Components/Views/Conditions";
 import ModalConditions from "./src/Components/Views/ModalConditions";
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
-import { Divider } from "react-native-elements";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { notifyConditionsShow } from "./src/Utils/UtilsGenerals";
+
+import { Provider } from 'react-redux';
+import configureStore from "./src/Redux/Reducers";
 
 
 const MainNavigator = createStackNavigator({
@@ -58,4 +59,10 @@ const Navigator = createSwitchNavigator({ Main: Drawer });
 
 const App = createAppContainer(Navigator)
 
-export default App;
+const store = configureStore();
+
+export default () => (
+  <Provider store={store}>
+    <App/>
+  </Provider>
+);
