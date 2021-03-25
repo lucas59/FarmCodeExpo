@@ -22,16 +22,10 @@ export default class FooterScanner extends React.Component {
   };
 
   render() {
-    const { muteIcon } = this.state
-    const { mute, changeMute, searching } = this.props;
-    console.log("Searching ", searching);
-    console.log("dsasdasdasd");
+    const { mute, changeMute } = this.props;
     return (
-      <View importantForAccessibility={searching ? "no" : "auto"} accessible={searching ? false : true} style={styles.footer}>
+      <View style={styles.footer}>
         <TouchableOpacity
-          importantForAccessibility={searching ? "no" : "auto"}
-          accessible={searching ? false : true}
-          disabled={searching ? true : false}
           onPress={this.onPressCodeManual}
           style={{
             backgroundColor: "#281E74",

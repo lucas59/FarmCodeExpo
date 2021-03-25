@@ -37,15 +37,9 @@ export default function Camera(props) {
   }
 
   const handleBarCodeScanned = async ({ type, data }) => {
-    //   mute();
-    props.changeSearching(true);
-    console.log(props.changeSearching);
+  
     setScanned(true);
-    console.log("data: ", data);
-    if (props.visibleCodeManual) {
-      props.codeManual()
-    }
-
+  
     notifySuccess().then(() => {
       if (data) {
         console.log(data);
@@ -59,7 +53,6 @@ export default function Camera(props) {
                   scan: setScanned,
                   mute: props.mute
                 });
-                props.changeSearching(false);
               } else {
                 if (!modalNotProduct) {
                   setModalNotProduct(true);
@@ -70,7 +63,6 @@ export default function Camera(props) {
                       setScanned(false);
                     }
                   });
-                  props.changeSearching(false);
                 }
               }
             }
@@ -80,7 +72,6 @@ export default function Camera(props) {
             notifyErrorServerConect().then(() => {
               setScanned(false);
             })
-            props.changeSearching(false);
           })
 
 

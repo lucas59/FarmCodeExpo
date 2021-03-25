@@ -53,12 +53,21 @@ export async function readProduct(parent, json) {
       });
 
       Speech.speak(
-        "Contenido: " +
+        "Contenido neto: " +
         json.atributosBasicos.contenidoNeto.valor +
         "  " +
         json.atributosBasicos.contenidoNeto.unidad,
         { language: "es-419", _voiceIndex: 100, onStopped: () => { console.log("stop") } }
       );
+
+      if (json.contenidoPorUso.valor !== "") {
+        Speech.speak(
+          "Contenido por uso: " + json.contenidoPorUso.valor +
+          "  " +
+          json.contenidoPorUso.unidad,
+          { language: "es-419", _voiceIndex: 100, onStopped: () => { console.log("stop") } }
+        );
+      }
 
       Speech.speak("Vía de administración: " + json.viaAdministracion, {
         language: "es-419",

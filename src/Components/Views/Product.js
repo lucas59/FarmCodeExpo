@@ -21,8 +21,10 @@ import LogoRonda from "../../../assets/logo-ronda.svg";
 import CardPreview from "../Product/CardPreview";
 import { findProduct, findProductFromKit } from "../../Utils/UtilsSession";
 import { notifyErrorServerConect } from "../../Utils/UtilsProducts";
+import { connect } from "react-redux";
+import { set_manual_code } from "../../Redux/Actions/ScannerActions";
 
-export default class Product extends React.Component {
+class Product extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,7 +34,6 @@ export default class Product extends React.Component {
       mute: props.navigation.getParam('mute'),
       loading: false,
       kitProducts: [],
-      reading: false,
       aditionInfoSize: 0
     };
   }
@@ -46,22 +47,14 @@ export default class Product extends React.Component {
 
   componentDidMount() {
     const { product, mute, parent } = this.state;
-    console.log("parent: ", parent);
-    console.log("PRODUCTO: ", product);
+
+    this.props.dispatch(set_manual_code(false));
+    console.log(this.props);
     if (mute) {
-      this.setState({ reading: true })
       readProduct(parent, product);
-
-      let inteval = setInterval(() => {
-        this.setState({ reading: false })
-      }, 3000);
-      setTimeout(() => {
-        clearInterval(inteval)
-      }, 6000)
-
     }
-    this.uploadKit();
 
+    this.uploadKit();
 
     sizeAlertsTrue(product.alertasyAvisos).then((aditionInfoSize) => {
       console.log("asdqwe: ", aditionInfoSize);
@@ -74,28 +67,31 @@ export default class Product extends React.Component {
     return {
       headerStyle: styles.headerStyle,
       headerLeft: (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.toggleDrawer();
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.toggleDrawer();
 
-          }}
-          style={{
-            width: 80,
-            alignContent: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-          }}
-          accessible={true}
-          accessibilityLabel="Menu lateral"
-        >
-          <Icon
+            }}
+            style={{
+              width: 80,
+              alignContent: "center",
+              justifyContent: "center",
+              flexDirection: "row",
+            }}
+            accessible={true}
+            accessibilityLabel="Menu lateral"
+          >
+            <Icon
 
-            style={{ width: 50, marginLeft: 10, marginRight: 30 }}
-            name="menu"
-            color="white"
-            size={50}
-          ></Icon>
-        </TouchableOpacity>
+              style={{ width: 50, marginLeft: 10, marginRight: 30 }}
+              name="menu"
+              color="white"
+              size={50}
+            ></Icon>
+          </TouchableOpacity>
+
+        </View>
       ),
       headerRight: (
         <View
@@ -167,8 +163,8 @@ export default class Product extends React.Component {
   }
 
   render() {
-    const { product, parent, loading, kitProducts, reading, aditionInfoSize } = this.state;
-    console.log(product.principioActivo.length);
+    const { product, parent, loading, kitProducts, aditionInfoSize } = this.state;
+    console.log(product.atributosBasicos.contenidoPorUso);
     let block = loading ? "none" : "auto";
 
     console.log("aditionInfoSize ", aditionInfoSize);
@@ -232,8 +228,19 @@ export default class Product extends React.Component {
                       " " +
                       product.atributosBasicos.contenidoNeto.unidad
                     }
-                    title={"Contenido: "}
+                    title={"Contenido neto: "}
                   />
+                  {product.contenidoPorUso.valor !== "" && (
+                    <ItemInfo
+                      value={
+                        product.contenidoPorUso.valor +
+                        " " +
+                        product.contenidoPorUso.unidad
+                      }
+                      title={"Contenido por uso: "}
+                    />
+                  )}
+
                   <ItemInfo
                     value={product.viaAdministracion}
                     title={"Via de administración: "}
@@ -376,9 +383,8 @@ export default class Product extends React.Component {
           ////////////////////FOOOTERR/////////////////////
         }
 
-        <View importantForAccessibility={reading ? "no-hide-descendants" : "auto"} style={styles.footer}>
+        <View style={styles.footer}>
           <TouchableOpacity
-            //  disabled={reading ? true : false}
             accessible={false}
             accessibilityLabel={"Volver a escanear producto"}
             onPress={this.goBack}
@@ -398,8 +404,6 @@ export default class Product extends React.Component {
           {parent && (
 
             <TouchableOpacity
-              disabled={reading ? true : false}
-              accessible={reading ? false : true}
               accessibilityLabel={"Regresar"}
               onPress={this.goToParent}
               style={{
@@ -417,8 +421,6 @@ export default class Product extends React.Component {
           )}
 
           <TouchableOpacity
-            disabled={reading ? true : false}
-            accessible={reading ? false : true}
             accessibilityLabel={"Detalles del producto"}
             style={{
               flex: 1,
@@ -437,3 +439,9 @@ export default class Product extends React.Component {
   }
 }
 
+
+const mapStateToProps = (state) => {
+  return state
+}
+
+export default connect(mapStateToProps)(Product);
