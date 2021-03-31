@@ -6,46 +6,19 @@ import { Input, Button } from "react-native-elements";
 export default function ModalCodeManual(props) {
   const [code, setCode] = useState(null);
 
-
-  useEffect(
-    React.useCallback(() => {
-      const onBackPress = () => {
-        // Do Whatever you want to do on back button click
-        // Return true to stop default back navigaton
-        // Return false to keep default back navigaton
-        console.log("backpress");
-        props.codeManual();
-        return true;
-      };
-
-      BackHandler.addEventListener(
-        'hardwareBackPress', onBackPress
-      );
-
-      return () =>
-        BackHandler.removeEventListener(
-          'hardwareBackPress', onBackPress
-        );
-    }, [])
-  );
-
-
   const onSearch = function () {
     if (code) {
       console.log(code.length);
       let params = {
         data: code,
       };
-
-      //props.codeManual();
+      console.log(params);
       Keyboard.dismiss();
       props.onSearch(params);
     }
   };
 
 
-
-  console.log("visible ", props.visible);
   if (props.visible) {
     return (
 

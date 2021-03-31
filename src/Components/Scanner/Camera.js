@@ -8,25 +8,25 @@ import Modal from "react-native-modal";
 import ModalCodeManual from "./ModalCodeManual";
 import { Camera as Cam } from "expo-camera";
 import * as Speech from "expo-speech";
+import { BackHandler } from "react-native";
+import { Alert } from "react-native";
+import { useSelector } from "react-redux";
+
 
 export default function Camera(props) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [modalNotProduct, setModalNotProduct] = useState(false);
+  const manualCode = useSelector(state => state.scanner.manualCode)
+
+  console.log("manualCode: ", manualCode);
+
   useEffect(() => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
       setHasPermission(status === "granted");
     })();
-
-
     props.props.navigation.addListener("willFocus", handleScanner, true);
-    // every time you add it, you also remove it when props.location.pathname changes
-    return () => {
-      console.log(props.props.navigation);
-      // props.props.navigation.removeListener("willFocus", handleScanner, true);
-    }
-
   }, []);
 
 
@@ -37,12 +37,9 @@ export default function Camera(props) {
   }
 
   const handleBarCodeScanned = async ({ type, data }) => {
-  
     setScanned(true);
-  
     notifySuccess().then(() => {
       if (data) {
-        console.log(data);
         findProduct(data)
           .then(response => {
             if (response !== null) {
@@ -73,51 +70,6 @@ export default function Camera(props) {
               setScanned(false);
             })
           })
-
-
-        /*     newSession().then((res) => {
-       // abro una session
-       if (res.data.code == 200) {
-         const token = res.data.data.token;
-         searchProduct(token, data).then((response) => {
-           if (response.data != undefined && response.data.code == 200) {
-             if (response.data.data.tipo != null) {
-               const product = response.data.data;
-               console.log(product);
-               props.props.navigation.navigate("Product", {
-                 product: product,
-                 scan: setScanned,
-                 mute: props.mute
-               });
-             } else {
-               if (!modalNotProduct) {
-                 setModalNotProduct(true);
-                 notifyError();
-                 Speech.speak("Error, el producto escaneado no esta disponible. Intente nuevamente.", {
-                   language: "es-419", onDone: () => {
-                     setModalNotProduct(false);
-                     setScanned(false);
-                   }
-                 });
-               }
-             }
-           }
-         }).catch((err) => {
-           console.log("ErrorP: ", err);
-           notifyErrorServerConect().then(()=>{
-             setScanned(false); //vuelvo a setear el escanner
-           })
-         })
-       }
-     }).catch((err)=>{
-       notifyErrorServerConect().then(()=>{
-         setScanned(false);
-       })
-       console.log("ErrorrL: ", err);
-       console.info(err)
-     });
-     
-     */
       }
 
     }).catch((err) => {
@@ -141,6 +93,7 @@ export default function Camera(props) {
         justifyContent: "flex-end",
       }}
     >
+
       <Cam
         style={StyleSheet.absoluteFill}
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
@@ -216,15 +169,15 @@ export default function Camera(props) {
             >
               Oops...
     </Text>
-            <Text style={{ marginTop: 20, fontSize: 20, color: "#343a40" }}>
-              Producto no disponible.
+            <Text style={{ textAlign: 'center', marginTop: 10, width: "100%", fontSize: 18, color: "#343a40" }}>
+              Información no provista por el laboratorio
     </Text>
           </View>
         </View>
       </Modal>
 
       <ModalCodeManual
-        visible={props.visibleCodeManual}
+        visible={manualCode}
         onSearch={handleBarCodeScanned}
         codeManual={props.codeManual}
       />

@@ -1,4 +1,4 @@
-import { URL_SESSION } from "../Config/Config";
+import { url_session } from "../Config/Config";
 import * as Speech from "expo-speech";
 import { AccessibilityInfo, Vibration } from "react-native";
 import Axios from "axios";
@@ -6,7 +6,8 @@ import { notifyErrorServerConect, searchProduct } from "./UtilsProducts";
 
 function newSession() {
   return new Promise((res, rej) => {
-    Axios.post(URL_SESSION, {
+    console.log("URL", url_session);
+    Axios.post(url_session, {
       usuario: "fbrasesco@gs1uy.org",
       contrasena: "12345678",
     }).then((response) => {
@@ -49,6 +50,7 @@ export function findProduct(gtin) {
           }
         }).catch((err) => {
           console.log("ErrorP: ", err);
+          alert("Error al buscar el producto", JSON.stringify(err))
           rej();
           notifyErrorServerConect().then(() => {
             setScanned(false); //vuelvo a setear el escanner

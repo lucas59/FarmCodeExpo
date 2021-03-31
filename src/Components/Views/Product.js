@@ -23,6 +23,8 @@ import { findProduct, findProductFromKit } from "../../Utils/UtilsSession";
 import { notifyErrorServerConect } from "../../Utils/UtilsProducts";
 import { connect } from "react-redux";
 import { set_manual_code } from "../../Redux/Actions/ScannerActions";
+import { BackHandler } from "react-native";
+import { Alert } from "react-native";
 
 class Product extends React.Component {
   constructor(props) {
@@ -45,6 +47,11 @@ class Product extends React.Component {
     })
   }
 
+  backAction = () => {
+    this.goBack();
+    return true;
+  };
+
   componentDidMount() {
     const { product, mute, parent } = this.state;
 
@@ -60,7 +67,19 @@ class Product extends React.Component {
       console.log("asdqwe: ", aditionInfoSize);
       this.setState({ aditionInfoSize: aditionInfoSize });
     })
+
+    this.backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.backAction
+    );
+
   }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
+    //BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+  }
+
 
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
@@ -186,20 +205,20 @@ class Product extends React.Component {
               ></Image>
 
             ) : (
-                <Image
-                  style={{
-                    width: 200,
-                    height: 250,
-                    flex: 1,
-                    resizeMode: "contain",
-                    marginRight: "auto",
-                    marginLeft: "auto",
-                  }}
-                  source={{
-                    uri: product.atributosBasicos.foto,
-                  }}
-                ></Image>
-              )}
+              <Image
+                style={{
+                  width: 200,
+                  height: 250,
+                  flex: 1,
+                  resizeMode: "contain",
+                  marginRight: "auto",
+                  marginLeft: "auto",
+                }}
+                source={{
+                  uri: product.atributosBasicos.foto,
+                }}
+              ></Image>
+            )}
           </View>
 
           <View

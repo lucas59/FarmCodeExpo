@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity, Vibration } from "react-native";
 import { styles } from "../../Styles/StylesGenerals";
-//import Icon from "react-native-vector-icons/Ionicons";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FooterScanner from "../Scanner/FooterScanner";
@@ -10,12 +9,10 @@ import Camera from "../Scanner/Camera";
 import LogoRonda from "../../../assets/logo-ronda.svg";
 import { notifySound, notifyWelcome, notifySuccess, notifyError } from "../../Utils/UtilsProducts";
 import { notifiTorchOff, notifiTorchOn, notifyOnCamera } from "../../Utils/UtilsGenerals";
-import { log } from "react-native-reanimated";
 import { connect } from "react-redux";
 import { set_manual_code } from "../../Redux/Actions/ScannerActions";
 import { BackHandler } from "react-native";
 import { Alert } from "react-native";
-
 
 class Scanner extends React.Component {
   constructor(props) {
@@ -30,6 +27,21 @@ class Scanner extends React.Component {
     };
   }
 
+  backAction = () => {
+    if (this.props.scanner.codeManual) {
+      this.props.dispatch(set_manual_code(false));
+    } else {
+      Alert.alert("¡Espera!", "¿Seguro de que quieres salir de la aplicación?", [
+        {
+          text: "Cancelar",
+          onPress: () => null,
+        },
+        { text: "Sí", onPress: () => BackHandler.exitApp() }
+      ]);
+    }
+    return true;
+  };
+
   componentDidMount() {
     console.log("manualCode", this.props.scanner.codeManual);
     this.props.navigation.setParams({
@@ -39,7 +51,15 @@ class Scanner extends React.Component {
       notifyWelcome();
     })
 
-    console.log("Params: ", this.props.navigation.param);
+    this.backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.backAction
+    );
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
+    //BackHandler.removeEventListener("hardwareBackPress", onBackPress);
 
   }
 
@@ -142,7 +162,7 @@ class Scanner extends React.Component {
     this.props.dispatch(set_manual_code(!this.props.scanner.manualCode));
   };
 
-  
+
 
   changeMute = () => {
     this.setState({ mute: !this.state.mute })
@@ -151,7 +171,7 @@ class Scanner extends React.Component {
 
 
   render() {
-    const { step, torchOn} = this.state;
+    const { step, torchOn } = this.state;
     console.log(this.props.scanner);
     const stylesCamera = StyleSheet.create({
       container: {
