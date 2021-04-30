@@ -1,5 +1,5 @@
 export default ({ config }) => {
-    config.name = "Etiqueta Virtual - TESTING"
+    config.name = "Etiqueta Virtual"
     return {
         ...config
     };
