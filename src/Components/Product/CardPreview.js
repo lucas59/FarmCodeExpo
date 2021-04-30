@@ -1,18 +1,30 @@
 import React from 'react'
-import { StyleSheet, View, Text, Image, Button } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 
-export default function CardPreview({ name, onSubmit }) {
+export default function CardPreview({ name, onSubmit, gtin, image }) {
     return (
         <View style={styles.card}>
             <View style={styles.content}>
                 <View style={styles.logoContainer}>
-                    <Image style={styles.logo} source={require("../../../assets/product-not-found.png")} />
+                    {image ? (
+                        <Image style={styles.logo} source={{ uri: image }} />
+                    ) : (
+                            <Image style={styles.logo} source={require("../../../assets/product-not-found.png")} />
+                        )}
                 </View>
                 <View style={styles.body}>
                     <Text style={styles.label}>{name}</Text>
-                    <TouchableOpacity onPress={()=> onSubmit("7730215000276")} style={styles.buttonShow}>
-                        <Text style={styles.textButton}>Ver Producto</Text>
+                    <TouchableOpacity 
+                    accessibilityLiveRegion="assertive"
+                    accessibilityTraits="button" 
+                    accessibilityComponentType="button"
+                    accessibilityLabel="Ver Producto" 
+                    onPress={() => onSubmit(gtin)}
+                    style={styles.buttonShow}>
+                        <Text
+                            accessibilityLabel="Ver producto"
+                            style={styles.textButton}>
+                            Ver Producto</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -22,15 +34,17 @@ export default function CardPreview({ name, onSubmit }) {
 const styles = StyleSheet.create({
     card: {
         borderRadius: 10,
-        height: 150,
+        height: "auto",
         backgroundColor: '#F2F2F2',
         padding: 10,
+        flex: 1
     },
     content: {
         backgroundColor: 'white',
         flexDirection: "row",
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        flexWrap: 'wrap'
     },
     logoContainer: {
         width: 150,
@@ -47,11 +61,13 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "flex-end",
         bottom: 0,
+        display: 'flex'
     },
     label: {
-        fontSize: 24,
+        fontSize: 18,
         color: '#132060',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        display: 'flex'
     },
     buttonShow: {
         marginTop: 20,

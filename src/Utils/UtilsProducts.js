@@ -1,4 +1,4 @@
-import { URL_PPRODUCTO } from "../Config/Config";
+import { url_product } from "../Config/Config";
 import Axios from "axios";
 import * as Speech from "expo-speech";
 import { Audio } from 'expo-av';
@@ -6,8 +6,9 @@ import { AccessibilityInfo } from "react-native";
 
 export function searchProduct(token, gtin) {
   return new Promise((res, rej) => {
+    console.log(url_product + gtin);
     try {
-      Axios.get(URL_PPRODUCTO + gtin, {
+      Axios.get(url_product + gtin, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((response) => {

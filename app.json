@@ -7,10 +7,11 @@
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "1.5.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "updates": {
+      "enabled": false,
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
@@ -19,14 +20,20 @@
     "ios": {
       "bundleIdentifier": "com.lucas59.FarmCode",
       "buildNumber": "1.0.0"
-        },
+    },
     "android": {
       "package": "com.lucas59.FarmCode",
       "versionCode": 1
     },
     "packagerOpts": {
       "config": "metro.config.js",
-      "sourceExts": ["js", "jsx", "svg", "ts", "tsx"]
+      "sourceExts": [
+        "js",
+        "jsx",
+        "svg",
+        "ts",
+        "tsx"
+      ]
     }
   }
 }
