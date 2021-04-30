@@ -42,8 +42,9 @@ function CustomDrawerContent({ navigation }) {
         <Image source={require("./assets/logo-ronda.png")} style={{ width: 200, height: 60, marginRight: 'auto', marginLeft: 'auto', marginVertical: 50 }} />
       </View>
       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+
         <Text style={{ color: 'gray', }} >{Constants.manifest.version}</Text>
-        <Text style={{ color: 'gray', }} >{mode.toUpperCase()}</Text>
+        <Text style={{ color: 'gray', }} >{mode == ! "production" && mode.toUpperCase()}</Text>
 
       </View>
       <TouchableOpacity style={{ height: 50, justifyContent: 'center', alignItems: 'center' }} onPress={() => modalConditionsShow()}>
