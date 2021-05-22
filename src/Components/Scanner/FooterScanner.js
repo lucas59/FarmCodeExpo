@@ -8,12 +8,13 @@ import { alertManualCode } from "../../Utils/UtilsProducts";
 
 export default class FooterScanner extends React.Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state={
-      muteIcon:false
+    this.state = {
+      muteIcon: false
     }
   }
+
 
   onPressCodeManual = () => {
     alertManualCode();
@@ -21,8 +22,7 @@ export default class FooterScanner extends React.Component {
   };
 
   render() {
-    const {muteIcon} = this.state
-    const {mute, changeMute} = this.props;
+    const { mute, changeMute } = this.props;
     return (
       <View style={styles.footer}>
         <TouchableOpacity
@@ -38,7 +38,7 @@ export default class FooterScanner extends React.Component {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {changeMute(), this.setState({muteIcon:!this.state.muteIcon})}}
+          onPress={() => { changeMute(), this.setState({ muteIcon: !this.state.muteIcon }) }}
           style={{
             backgroundColor: "black",
             flex: 1,
@@ -47,45 +47,45 @@ export default class FooterScanner extends React.Component {
             justifyContent: "center",
           }}
         >
-          
+
           {mute ? (
             <React.Fragment>
-            <Text
-            style={{
-              color: "white",
-              textAlign: "center",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            Silenciar
+              <Text
+                style={{
+                  color: "white",
+                  textAlign: "center",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                Silenciar
           </Text>
-            <Icon
-            style={{ marginLeft: 10, color: "white" }}
-            size={30}
-            name="md-volume-off"
-          />
-          </React.Fragment>
-          ):(
-            <React.Fragment>
-            <Text
-            style={{
-              color: "white",
-              textAlign: "center",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            Activar volumen
+              <Icon
+                style={{ marginLeft: 10, color: "white" }}
+                size={30}
+                name="md-volume-off"
+              />
+            </React.Fragment>
+          ) : (
+              <React.Fragment>
+                <Text
+                  style={{
+                    color: "white",
+                    textAlign: "center",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  Activar volumen
           </Text>
-            <Icon
-            style={{ marginLeft: 10, color: "white" }}
-            size={30}
-            name="md-volume-high"
-          />
-          </React.Fragment>
-          )}
-          
+                <Icon
+                  style={{ marginLeft: 10, color: "white" }}
+                  size={30}
+                  name="md-volume-high"
+                />
+              </React.Fragment>
+            )}
+
         </TouchableOpacity>
       </View>
     );

@@ -1,8 +1,7 @@
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import {
   createAppContainer,
-  SafeAreaView,
   createSwitchNavigator,
 } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
@@ -12,11 +11,12 @@ import Scanner from "./src/Components/Views/Scanner";
 import Product from "./src/Components/Views/Product";
 import Conditions from "./src/Components/Views/Conditions";
 import ModalConditions from "./src/Components/Views/ModalConditions";
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
-import { Divider } from "react-native-elements";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { notifyConditionsShow } from "./src/Utils/UtilsGenerals";
-
-
+import Constants from 'expo-constants';
+import { Provider } from 'react-redux';
+import configureStore from "./src/Redux/Reducers";
+import { mode } from './src/Config/Config'
 const MainNavigator = createStackNavigator({
   Inicio: { screen: Home },
   Scanner: { screen: Scanner },
@@ -37,9 +37,15 @@ function CustomDrawerContent({ navigation }) {
   }
 
   return (
-    <View style={{ flex: 1, justifyContent: 'space-between' }}>
+    <View style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center' }}>
       <View>
         <Image source={require("./assets/logo-ronda.png")} style={{ width: 200, height: 60, marginRight: 'auto', marginLeft: 'auto', marginVertical: 50 }} />
+      </View>
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+
+        <Text style={{ color: 'gray', }} >{Constants.manifest.version}</Text>
+        <Text style={{ color: 'gray', }} >{mode == ! "production" && mode.toUpperCase()}</Text>
+
       </View>
       <TouchableOpacity style={{ height: 50, justifyContent: 'center', alignItems: 'center' }} onPress={() => modalConditionsShow()}>
         <Text style={{ color: '#0e2a47', fontWeight: 'bold' }}>Términos y condiciones</Text>
@@ -58,4 +64,10 @@ const Navigator = createSwitchNavigator({ Main: Drawer });
 
 const App = createAppContainer(Navigator)
 
-export default App;
+const store = configureStore();
+
+export default () => (
+  <Provider store={store}>
+    <App />
+  </Provider>
+);

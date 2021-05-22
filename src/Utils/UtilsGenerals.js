@@ -29,71 +29,129 @@ export async function searchProduct(code, type) {
   });
 }
 
-export function readProduct(json) {
-  Speech.speak(json.atributosBasicos.descripcion.toLowerCase(), {
-    // nombre comercial
-    language: "es-419",
-  });
+export async function readProduct(parent, json) {
+  return new Promise(async (res, rej) => {
 
-  Speech.speak("Presentación: " + json.formaFarmaceutica, {
-    language: "es-419",
-  });
-  Speech.speak(
-    "Contenido: " +
-    json.atributosBasicos.contenidoNeto.valor +
-    "  " +
-    json.atributosBasicos.contenidoNeto.unidad,
-    { language: "es-419" }
-  );
-  Speech.speak("Vía de administración: " + json.viaAdministracion, {
-    language: "es-419",
-  });
 
-  Speech.speak("Principio activo:  ", {
-    language: "es-419",
-  });
-
-  json.principioActivo.map((val, i) => {
-    Speech.speak(val.nombre.toLowerCase(), {
-      language: "es-419",
+    Speech.speak(json.atributosBasicos.descripcion.toLowerCase(), {
+      // nombre comercial
+      language: "es-419", _voiceIndex: 100
     });
 
-    Speech.speak(
-      "Concentración: " +
-      val.concentracion.valor +
-      " " +
-      val.concentracion.unidad +
-      " En " +
-      val.enMedio.valor +
-      "  " +
-      val.enMedio.unidad,
-      { language: "es-419" }
-    );
-  });
 
-  if (json.alertasyAvisos.length > 0) {
-    Speech.speak("Información adicional", { language: "es-419" });
-    json.alertasyAvisos.forEach((element) => {
-      Speech.speak(element.alerta, { language: "es-419" });
-    });
-  }
+    if (json.kitPromocional.length > 0) {
+      Speech.speak("Productos contenidos en este KIT : " + json.kitPromocional.length, {
+        language: "es-419", _voiceIndex: 100
 
-  if (json.empresa) {
-    Speech.speak("Empresa: " + json.empresa, {
-      language: "es-419",
-    });
-  }
+      });
+    }
 
+    if (json.kitPromocional.length === 0 || parent) {
+      Speech.speak("Presentación: " + json.formaFarmaceutica, {
+        language: "es-419",
+        _voiceIndex: 100
+      });
+
+      Speech.speak(
+        "Contenido neto: " +
+        json.atributosBasicos.contenidoNeto.valor +
+        "  " +
+        json.atributosBasicos.contenidoNeto.unidad,
+        { language: "es-419", _voiceIndex: 100, onStopped: () => { console.log("stop") } }
+      );
+
+      if (json.contenidoPorUso.valor !== "") {
+        Speech.speak(
+          "Contenido por uso: " + json.contenidoPorUso.valor +
+          "  " +
+          json.contenidoPorUso.unidad,
+          { language: "es-419", _voiceIndex: 100, onStopped: () => { console.log("stop") } }
+        );
+      }
+
+      Speech.speak("Vía de administración: " + json.viaAdministracion, {
+        language: "es-419",
+        _voiceIndex: 100
+      });
+
+    }
+
+
+    if (json.principioActivo.length > 0) {
+
+      Speech.speak("Principio activo:  ", {
+        language: "es-419",
+        _voiceIndex: 100
+      });
+
+      json.principioActivo.map((val, i) => {
+        Speech.speak(val.nombre.toLowerCase(), {
+          language: "es-419",
+          _voiceIndex: 100
+        });
+
+        Speech.speak(
+          "Concentración: " +
+          val.concentracion.valor +
+          " " +
+          val.concentracion.unidad +
+          " En " +
+          val.enMedio.valor +
+          "  " +
+          val.enMedio.unidad,
+          { language: "es-419", _voiceIndex: 100, onStopped: () => { res() } }
+        );
+      });
+
+    }
+
+    if (json.alertasyAvisos) {
+      let size = await sizeAlertsTrue(json.alertasyAvisos);
+      if (size > 0) {
+        Speech.speak("Información adicional", { language: "es-419" });
+      }
+
+      {
+        json.alertasyAvisos.contieneAzucar && (
+          Speech.speak("Contiene azucar", { language: "es-419", _voiceIndex: 100 })
+        )
+      }
+      {
+        json.alertasyAvisos.contieneLactosa && (
+          Speech.speak("Contiene lactosa", { language: "es-419", _voiceIndex: 100 })
+        )
+      }
+
+    }
+
+    if (json.empresa) {
+      Speech.speak("Empresa: " + json.empresa, {
+        language: "es-419", _voiceIndex: 100,
+        onDone: () => {
+          console.log("finish speak");
+          res()
+        }
+      });
+    }
+  })
+}
+
+export function sizeAlertsTrue(obj) {
+  console.log(obj);
+  return new Promise((res, rej) => {
+    let size = 0;
+    for (const key in obj) {
+      console.log("Key: ", obj[key]);
+      if (obj[key] === true) {
+        size++;
+      }
+    }
+    res(size);
+  })
 }
 
 export function mute() {
-
-  Speech.isSpeakingAsync().then((boolean) => {
-    console.log(boolean);
-    if (boolean) {
-      Speech.stop();
-    }
-  })
+  Speech.stop();
 }
 
 export function AskPermissionAudio() {

@@ -5,59 +5,111 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  Dimensions,
-  StyleSheet,
+  Dimensions
 } from "react-native";
 import { Divider } from "react-native-elements";
 import { log } from "react-native-reanimated";
 import { styles } from "../../Styles/StylesGenerals";
-import { readProduct, mute, notifyOnCamera } from "../../Utils/UtilsGenerals";
+import { readProduct, mute, notifyOnCamera, sizeAlertsTrue } from "../../Utils/UtilsGenerals";
 import ItemInfo from "../Product/ItemInfo";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import IconFontisto from "react-native-vector-icons/Fontisto";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import * as Speech from "expo-speech";
 
 import LogoRonda from "../../../assets/logo-ronda.svg";
 import CardPreview from "../Product/CardPreview";
-import { findProduct } from "../../Utils/UtilsSession";
+import { findProduct, findProductFromKit } from "../../Utils/UtilsSession";
 import { notifyErrorServerConect } from "../../Utils/UtilsProducts";
+import { connect } from "react-redux";
+import { set_manual_code } from "../../Redux/Actions/ScannerActions";
+import { BackHandler } from "react-native";
+import { Alert } from "react-native";
 
-export default class Product extends React.Component {
+class Product extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       product: props.navigation.getParam("product"),
       scanner: props.navigation.getParam("scan"),
       parent: props.navigation.getParam("parent"),
+      mute: props.navigation.getParam('mute'),
+      loading: false,
+      kitProducts: [],
+      aditionInfoSize: 0
     };
   }
 
-  componentDidMount() {
-    const { product } = this.state;
-    const mute = this.props.navigation.getParam('mute');
-
-    if (mute) {
-      readProduct(product);
-    }
+  uploadKit = () => {
+    const { product } = this.state
+    findProductFromKit(product).then(async (arr) => {
+      this.setState({ kitProducts: arr })
+    })
   }
+
+  backAction = () => {
+    this.goBack();
+    return true;
+  };
+
+  componentDidMount() {
+    const { product, mute, parent } = this.state;
+
+    this.props.dispatch(set_manual_code(false));
+    console.log(this.props);
+    if (mute) {
+      readProduct(parent, product);
+    }
+
+    this.uploadKit();
+
+    sizeAlertsTrue(product.alertasyAvisos).then((aditionInfoSize) => {
+      console.log("asdqwe: ", aditionInfoSize);
+      this.setState({ aditionInfoSize: aditionInfoSize });
+    })
+
+    this.backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.backAction
+    );
+
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
+    //BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+  }
+
 
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
     return {
       headerStyle: styles.headerStyle,
       headerLeft: (
-        <View
-          style={{
-            width: 80,
-            alignContent: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Icon
-            style={{ width: 50, marginLeft: "auto", marginRight: "auto" }}
-            name="menu"
-            color="white"
-            size={50}
-          ></Icon>
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.toggleDrawer();
+
+            }}
+            style={{
+              width: 80,
+              alignContent: "center",
+              justifyContent: "center",
+              flexDirection: "row",
+            }}
+            accessible={true}
+            accessibilityLabel="Menu lateral"
+          >
+            <Icon
+
+              style={{ width: 50, marginLeft: 10, marginRight: 30 }}
+              name="menu"
+              color="white"
+              size={50}
+            ></Icon>
+          </TouchableOpacity>
+
         </View>
       ),
       headerRight: (
@@ -77,42 +129,66 @@ export default class Product extends React.Component {
   };
 
   goBack = () => {
-    const { scanner } = this.state;
+    const { parent } = this.state;
     mute();
     notifyOnCamera().then(() => {
-      this.props.navigation.goBack();
+      if (parent) {
+        this.props.navigation.navigate("Scanner", { step: 1 });
+      } else {
+        this.props.navigation.navigate("Scanner", { step: 1 });
+      }
+
     })
   };
 
   goToParent = () => {
+    mute();
     this.props.navigation.goBack();
   }
 
-  findProduct = (gtin) => {
-    console.log("Buscando: ", gtin);
 
+  toProductDetails = (product) => {
+    const { mute } = this.state;
+    Speech.stop();
+    this.props.navigation.push("Product", {
+      product: product,
+      parent: true,
+      mute: mute
+    });
+  }
+
+  findProduct = (gtin) => {
+    const { mute } = this.state;
+    this.setState({ loading: true })
     findProduct(gtin).then(response => {
       if (response !== null) {
         const product = response.data;
-        console.log("PRODUCTO: ", product);
+        Speech.stop();
         if (product.tipo) {
           this.props.navigation.push("Product", {
             product: product,
-            parent: true
+            parent: true,
+            mute: mute
           });
+          this.setState({ loading: false })
         }
       }
     })
       .catch(err => {
         console.log(err);
         notifyErrorServerConect();
+        this.setState({ loading: false })
       })
   }
 
   render() {
-    const { product, parent } = this.state;
+    const { product, parent, loading, kitProducts, aditionInfoSize } = this.state;
+    console.log(product.atributosBasicos.contenidoPorUso);
+    let block = loading ? "none" : "auto";
+
+    console.log("aditionInfoSize ", aditionInfoSize);
     return (
-      <View style={{ flex: 1 }}>
+      <View pointerEvents={block} style={{ flex: 1 }}>
         <ScrollView>
           <View style={{ alignContent: "center" }}>
             {product.atributosBasicos.foto === null ? (
@@ -129,20 +205,20 @@ export default class Product extends React.Component {
               ></Image>
 
             ) : (
-                <Image
-                  style={{
-                    width: 200,
-                    height: 250,
-                    flex: 1,
-                    resizeMode: "contain",
-                    marginRight: "auto",
-                    marginLeft: "auto",
-                  }}
-                  source={{
-                    uri: product.atributosBasicos.foto,
-                  }}
-                ></Image>
-              )}
+              <Image
+                style={{
+                  width: 200,
+                  height: 250,
+                  flex: 1,
+                  resizeMode: "contain",
+                  marginRight: "auto",
+                  marginLeft: "auto",
+                }}
+                source={{
+                  uri: product.atributosBasicos.foto,
+                }}
+              ></Image>
+            )}
           </View>
 
           <View
@@ -155,25 +231,50 @@ export default class Product extends React.Component {
             }}
           >
             <View style={{ marginLeft: 20, marginVertical: 20, width: "100%" }}>
-
+              <MaterialCommunityIcons size={40} color="#0e2a47" name="medical-bag" />
               <ItemInfo value={product.atributosBasicos.descripcion} />
+              {console.log("kIT ", product.kitPromocional)}
+              {(product.kitPromocional.length === 0 || parent) && (
+                <>
+                  <ItemInfo
+                    value={product.formaFarmaceutica}
+                    title={"Presentación: "}
+                  />
 
-              <ItemInfo
-                value={product.formaFarmaceutica}
-                title={"Presentación: "}
-              />
-              <ItemInfo
-                value={
-                  product.atributosBasicos.contenidoNeto.valor +
-                  " " +
-                  product.atributosBasicos.contenidoNeto.unidad
-                }
-                title={"Contenido: "}
-              />
-              <ItemInfo
-                value={product.viaAdministracion}
-                title={"Via de administración: "}
-              />
+                  <ItemInfo
+                    value={
+                      product.atributosBasicos.contenidoNeto.valor +
+                      " " +
+                      product.atributosBasicos.contenidoNeto.unidad
+                    }
+                    title={"Contenido neto: "}
+                  />
+                  {product.contenidoPorUso.valor !== "" && (
+                    <ItemInfo
+                      value={
+                        product.contenidoPorUso.valor +
+                        " " +
+                        product.contenidoPorUso.unidad
+                      }
+                      title={"Contenido por uso: "}
+                    />
+                  )}
+
+                  <ItemInfo
+                    value={product.viaAdministracion}
+                    title={"Via de administración: "}
+                  />
+
+                </>
+              )}
+
+
+              {product.kitPromocional.length > 0 && (
+                <ItemInfo
+                  value={product.kitPromocional.length}
+                  title={"Productos contenidos en este KIT: "}
+                />
+              )}
             </View>
             <Divider
               style={{
@@ -186,54 +287,88 @@ export default class Product extends React.Component {
               }}
             />
 
-            <View style={{ marginLeft: 20, marginVertical: 20 }}>
+            {product.principioActivo.length > 0 && (
+              <>
+                <View style={{ marginLeft: 20, marginVertical: 20 }}>
+                  <IconFontisto size={40} color="#0e2a47" name="laboratory" />
+                  <View>
 
-              <IconFontisto size={40} color="#0e2a47" name="laboratory" />
-              <View>
+                    <Text style={styles.itemInfo}>Principio Activo:</Text>
 
-                <Text style={styles.itemInfo}>Principio Activo:</Text>
 
-                {product.principioActivo.map((val, i) => {
-                  return (
-                    <View style={{ marginVertical: 10 }} key={i}>
-                      <Text
-                        style={{
-                          color: "gray",
-                          textAlign: "left",
-                          width: Dimensions.get("window").width / 2,
-                        }}
-                      >
-                        {val.nombre}
-                      </Text>
-                      <ItemInfo
-                        value={
-                          val.concentracion.valor +
-                          " " +
-                          val.concentracion.unidad +
-                          " En " +
-                          val.enMedio.valor +
-                          " " +
-                          val.enMedio.unidad
-                        }
-                        title={"Concentración: "}
-                      />
-                    </View>
-                  );
-                })}
-              </View>
-            </View>
+                    {product.principioActivo.map((val, i) => {
+                      return (
+                        <View style={{ marginVertical: 10 }} key={i}>
+                          <Text
+                            style={{
+                              color: "gray",
+                              textAlign: "left",
+                              width: Dimensions.get("window").width / 2,
+                            }}
+                          >
+                            {val.nombre}
+                          </Text>
+                          <ItemInfo
+                            value={
+                              val.concentracion.valor +
+                              " " +
+                              val.concentracion.unidad +
+                              " En " +
+                              val.enMedio.valor +
+                              " " +
+                              val.enMedio.unidad
+                            }
+                            title={"Concentración: "}
+                          />
+                        </View>
+                      );
+                    })}
 
-            {/*--------------*/}
-            <Divider
-              style={{
-                backgroundColor: "gray",
-                marginVertical: 10,
-                marginRight: "auto",
-                marginLeft: "auto",
-                height: 2,
-                width: 200,
-              }}
-            />
+                  </View>
+                </View>
+
+                <Divider
+                  style={{
+                    backgroundColor: "gray",
+                    marginVertical: 10,
+                    marginRight: "auto",
+                    marginLeft: "auto",
+                    height: 2,
+                    width: 200,
+                  }}
+                />
+
+              </>
+            )}
+
+
+
+            {aditionInfoSize > 0 && product.alertasyAvisos && (
+              <>
+                <View style={{ marginLeft: 20, marginVertical: 20 }}>
+                  <Text style={styles.itemInfo}>INFORMACIÓN ADICIONAL</Text>
+                  {product.alertasyAvisos.contieneAzucar && (
+                    <ItemInfo value={"Contiene azúcar"} />
+                  )}
+                  {product.alertasyAvisos.contieneLactosa && (
+                    <ItemInfo value={"Contiene lactosa"} />
+                  )}
+                </View>
+
+                <Divider
+                  style={{
+                    backgroundColor: "gray",
+                    marginVertical: 10,
+                    marginRight: "auto",
+                    marginLeft: "auto",
+                    height: 2,
+                    width: 200,
+                  }}
+                />
+              </>
+            )}
+
+
             <View style={{ marginLeft: 20, marginVertical: 20 }}>
 
               <Icon name="office-building" size={40} color="#0e2a47" />
@@ -249,33 +384,28 @@ export default class Product extends React.Component {
 
             {/*--------------*/}
 
-
-            {product.alertasyAvisos && product.alertasyAvisos.length > 0 && (
-              <View style={{ marginTop: 10 }}>
-                <Text style={styles.itemInfo}>INFORMACIÓN ADICIONAL</Text>
-                {product.alertasyAvisos.map((val, i) => {
-                  return (
-                    <ItemInfo key={i} style={styles.itemInfo} value={val.alerta} />
-                  );
-                })}
-              </View>
-            )}
           </View>
 
-          {/*
+
           <View style={styles.kitContainer}>
-            <Text style={styles.kitTitleProduc}>Producto N 1</Text>
-            <CardPreview onSubmit={this.findProduct} name={"Remedio"} />
+            {kitProducts.map((value, index) => (
+              <>
+                <Text style={styles.kitTitleProduc}>Producto Nº {index + 1}</Text>
+                <CardPreview gtin={value.atributosBasicos.gtin} image={value.atributosBasicos.foto} onSubmit={() => this.toProductDetails(value)} name={value.atributosBasicos.descripcion} />
+              </>
+            ))
+            }
           </View>
-*/}
-
         </ScrollView>
+
+        {
+          ////////////////////FOOOTERR/////////////////////
+        }
 
         <View style={styles.footer}>
           <TouchableOpacity
-            accessible={true}
-            accessibilityLabel="Volver a escanear producto"
-            accessibilityLiveRegion="assertive"
+            accessible={false}
+            accessibilityLabel={"Volver a escanear producto"}
             onPress={this.goBack}
 
             style={{
@@ -293,8 +423,7 @@ export default class Product extends React.Component {
           {parent && (
 
             <TouchableOpacity
-              accessible={true}
-              accessibilityLabel="Detalles del producto"
+              accessibilityLabel={"Regresar"}
               onPress={this.goToParent}
               style={{
                 flex: 1,
@@ -302,7 +431,7 @@ export default class Product extends React.Component {
               }}
             >
               <Icon
-                style={{ alignSelf: "center", color: "#0571c3" }}
+                style={{ alignSelf: "center", color: "#0e2a47" }}
                 size={60}
                 name="arrow-left"
               />
@@ -311,8 +440,7 @@ export default class Product extends React.Component {
           )}
 
           <TouchableOpacity
-            accessible={true}
-            accessibilityLabel="Detalles del producto"
+            accessibilityLabel={"Detalles del producto"}
             style={{
               flex: 1,
               justifyContent: "center",
@@ -325,8 +453,14 @@ export default class Product extends React.Component {
             />
           </TouchableOpacity>
         </View>
-      </View>
+      </View >
     );
   }
 }
 
+
+const mapStateToProps = (state) => {
+  return state
+}
+
+export default connect(mapStateToProps)(Product);

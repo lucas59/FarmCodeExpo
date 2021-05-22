@@ -35,7 +35,8 @@ const styles = StyleSheet.create({
   kitTitleProduc: {
     color: 'gray',
     textAlign:'center',
-    fontSize: 20
+    fontSize: 18,
+    marginVertical:10
   }
 });
 
