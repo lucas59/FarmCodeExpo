@@ -1,6 +1,5 @@
 import React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 export default class ConfirmScan extends React.Component {
   render() {
@@ -11,9 +10,12 @@ export default class ConfirmScan extends React.Component {
           flex: 1,
           justifyContent: 'flex-start',
           alignItems: 'center',
-        }}>
+        }}
+      >
         <TouchableOpacity
-            onPress={()=>{this.props.ConfirmScan()}}
+          onPress={() => {
+            this.props.ConfirmScan();
+          }}
           style={{
             marginTop: 50,
             alignItems: 'center',
@@ -23,13 +25,12 @@ export default class ConfirmScan extends React.Component {
             backgroundColor: '#325EA7',
             borderRadius: 150,
             shadowColor: '#000',
-            shadowOffset: {width: 0, height: 2},
+            shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.25,
             shadowRadius: 3.84,
-          }}>
-          <Text style={{color: 'white', fontSize: 40, fontWeight: 'bold'}}>
-            ESCANEAR
-          </Text>
+          }}
+        >
+          <Text style={{ color: 'white', fontSize: 40, fontWeight: 'bold' }}>ESCANEAR</Text>
         </TouchableOpacity>
       </View>
     );

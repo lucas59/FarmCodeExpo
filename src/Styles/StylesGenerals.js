@@ -12,12 +12,12 @@ const styles = StyleSheet.create({
   },
   headerStyle: {
     backgroundColor: '#0571c3',
-    color: 'white'
+    color: 'white',
   },
   itemInfo: {
     paddingVertical: 2,
     display: 'flex',
-    color: 'gray'
+    color: 'gray',
   },
   footer: {
     height: 100,
@@ -27,17 +27,19 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     borderTopWidth: 1,
-    borderTopColor: 'lightgray'
+    borderTopColor: 'lightgray',
   },
   kitContainer: {
-    marginLeft: 20, marginVertical: 20, width: "90%"
+    marginLeft: 20,
+    marginVertical: 20,
+    width: '90%',
   },
   kitTitleProduc: {
     color: 'gray',
-    textAlign:'center',
+    textAlign: 'center',
     fontSize: 18,
-    marginVertical:10
-  }
+    marginVertical: 10,
+  },
 });
 
 export { styles };

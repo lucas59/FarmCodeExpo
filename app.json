@@ -2,24 +2,18 @@
   "expo": {
     "name": "Etiqueta Virtual",
     "slug": "FarmCode",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "com.lucas59.FarmCode",
       "buildNumber": "1.0.0"
-        },
+    },
     "android": {
       "package": "com.lucas59.FarmCode",
       "versionCode": 1

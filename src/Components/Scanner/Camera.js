@@ -1,81 +1,77 @@
-import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, useFocusEffect } from "react-native";
-import { BarCodeScanner } from "expo-barcode-scanner";
-import { searchProduct, errorProduct, notifyError, notifySound, notifySuccess, notifyErrorServerConect } from "../../Utils/UtilsProducts";
-import { findProduct, newSession } from "../../Utils/UtilsSession";
-import Icon from "react-native-vector-icons/Ionicons";
-import Modal from "react-native-modal";
-import ModalCodeManual from "./ModalCodeManual";
-import { Camera as Cam } from "expo-camera";
-import * as Speech from "expo-speech";
-import { BackHandler } from "react-native";
-import { Alert } from "react-native";
-import { useSelector } from "react-redux";
-
+import { BarCodeScanner } from 'expo-barcode-scanner';
+import { Camera as Cam } from 'expo-camera';
+import * as Speech from 'expo-speech';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import Modal from 'react-native-modal';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { useSelector } from 'react-redux';
+import { notifyError, notifyErrorServerConect, notifySuccess } from '../../Utils/UtilsProducts';
+import { findProduct } from '../../Utils/UtilsSession';
+import ModalCodeManual from './ModalCodeManual';
 
 export default function Camera(props) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [modalNotProduct, setModalNotProduct] = useState(false);
-  const manualCode = useSelector(state => state.scanner.manualCode)
+  const manualCode = useSelector((state) => state.scanner.manualCode);
 
-  console.log("manualCode: ", manualCode);
+  console.log('manualCode: ', manualCode);
 
   useEffect(() => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === "granted");
+      setHasPermission(status === 'granted');
     })();
-    props.props.navigation.addListener("willFocus", handleScanner, true);
+    props.props.navigation.addListener('willFocus', handleScanner, true);
   }, []);
-
-
-
 
   const handleScanner = async () => {
     await setScanned(false);
-  }
+  };
 
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
-    notifySuccess().then(() => {
-      if (data) {
-        findProduct(data)
-          .then(response => {
-            if (response !== null) {
-              const product = response.data;
-              if (product.tipo) {
-                props.props.navigation.push("Product", {
-                  product: product,
-                  scan: setScanned,
-                  mute: props.mute
-                });
-              } else {
-                if (!modalNotProduct) {
-                  setModalNotProduct(true);
-                  notifyError();
-                  Speech.speak("Error, el producto escaneado no esta disponible. Intente nuevamente.", {
-                    language: "es-419", onDone: () => {
-                      setModalNotProduct(false);
-                      setScanned(false);
-                    }
+    notifySuccess()
+      .then(() => {
+        if (data) {
+          findProduct(data)
+            .then((response) => {
+              if (response !== null) {
+                const product = response.data;
+                if (product.tipo) {
+                  props.props.navigation.push('Product', {
+                    product: product,
+                    scan: setScanned,
+                    mute: props.mute,
                   });
+                } else {
+                  if (!modalNotProduct) {
+                    setModalNotProduct(true);
+                    notifyError();
+                    Speech.speak('Error, el producto escaneado no esta disponible. Intente nuevamente.', {
+                      language: 'es-419',
+                      onDone: () => {
+                        setModalNotProduct(false);
+                        setScanned(false);
+                      },
+                    });
+                  }
                 }
               }
-            }
-          })
-          .catch(err => {
-            console.log("Error: ", err);
-            notifyErrorServerConect().then(() => {
-              setScanned(false);
             })
-          })
-      }
-
-    }).catch((err) => {
-      console.log(err);
-      console.info(err)
-    })
+            .catch((err) => {
+              console.log('Error: ', err);
+              notifyErrorServerConect().then(() => {
+                setScanned(false);
+              });
+            });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        console.info(err);
+      });
   };
 
   if (hasPermission === null) {
@@ -89,21 +85,16 @@ export default function Camera(props) {
     <View
       style={{
         flex: 1,
-        flexDirection: "column",
-        justifyContent: "flex-end",
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
       }}
     >
-
       <Cam
         style={StyleSheet.absoluteFill}
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         onTouchStart={true}
         autoFocus={'on'}
-        flashMode={
-          props.torchOn == true
-            ? Cam.Constants.FlashMode.torch
-            : Cam.Constants.FlashMode.off
-        }
+        flashMode={props.torchOn == true ? Cam.Constants.FlashMode.torch : Cam.Constants.FlashMode.off}
         barCodeScannerSettings={{
           barcodeTypes: [
             BarCodeScanner.Constants.Type.ean8,
@@ -116,8 +107,8 @@ export default function Camera(props) {
       />
 
       <Modal
-        animationIn={"bounceIn"}
-        animationOut={"bounceOut"}
+        animationIn={'bounceIn'}
+        animationOut={'bounceOut'}
         isVisible={modalNotProduct}
         onBackdropPress={() => {
           setModalNotProduct(false);
@@ -131,19 +122,19 @@ export default function Camera(props) {
         <View
           style={{
             flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
+            justifyContent: 'center',
+            alignItems: 'center',
             marginTop: 22,
           }}
         >
           <View
             style={{
               margin: 20,
-              backgroundColor: "white",
+              backgroundColor: 'white',
               borderRadius: 5,
               padding: 35,
-              alignItems: "center",
-              shadowColor: "#000",
+              alignItems: 'center',
+              shadowColor: '#000',
               shadowOffset: {
                 width: 0,
                 height: 2,
@@ -151,36 +142,28 @@ export default function Camera(props) {
               shadowOpacity: 0.25,
               shadowRadius: 3.84,
               elevation: 5,
-              width: "80%",
+              width: '80%',
             }}
           >
             <Icon
               style={{
-                width: "auto",
-                color: "#dc3545",
+                width: 'auto',
+                color: '#dc3545',
                 marginVertical: 20,
               }}
               name="ios-close-circle-outline"
               color="white"
               size={100}
             ></Icon>
-            <Text
-              style={{ fontSize: 35, fontWeight: "bold", color: "#343a40" }}
-            >
-              Oops...
-    </Text>
-            <Text style={{ textAlign: 'center', marginTop: 10, width: "100%", fontSize: 18, color: "#343a40" }}>
+            <Text style={{ fontSize: 35, fontWeight: 'bold', color: '#343a40' }}>Oops...</Text>
+            <Text style={{ textAlign: 'center', marginTop: 10, width: '100%', fontSize: 18, color: '#343a40' }}>
               Información no provista por el laboratorio
-    </Text>
+            </Text>
           </View>
         </View>
       </Modal>
 
-      <ModalCodeManual
-        visible={manualCode}
-        onSearch={handleBarCodeScanned}
-        codeManual={props.codeManual}
-      />
+      <ModalCodeManual visible={manualCode} onSearch={handleBarCodeScanned} codeManual={props.codeManual} />
     </View>
   );
 }

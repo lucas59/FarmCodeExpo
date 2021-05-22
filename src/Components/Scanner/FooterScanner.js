@@ -1,20 +1,16 @@
-import React from "react";
-import { View, TouchableOpacity, Text } from "react-native";
-import { styles } from "../../Styles/StylesGenerals";
-import Icon from "react-native-vector-icons/Ionicons";
-import { mute } from "../../Utils/UtilsGenerals";
-import { alertManualCode } from "../../Utils/UtilsProducts";
-
+import React from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { styles } from '../../Styles/StylesGenerals';
+import { alertManualCode } from '../../Utils/UtilsProducts';
 
 export default class FooterScanner extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      muteIcon: false
-    }
+      muteIcon: false,
+    };
   }
-
 
   onPressCodeManual = () => {
     alertManualCode();
@@ -28,64 +24,54 @@ export default class FooterScanner extends React.Component {
         <TouchableOpacity
           onPress={this.onPressCodeManual}
           style={{
-            backgroundColor: "#281E74",
+            backgroundColor: '#281E74',
             flex: 1,
-            justifyContent: "center",
+            justifyContent: 'center',
           }}
         >
-          <Text style={{ color: "white", textAlign: "center" }}>
-            Ingresar Código
-          </Text>
+          <Text style={{ color: 'white', textAlign: 'center' }}>Ingresar Código</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => { changeMute(), this.setState({ muteIcon: !this.state.muteIcon }) }}
+          onPress={() => {
+            changeMute(), this.setState({ muteIcon: !this.state.muteIcon });
+          }}
           style={{
-            backgroundColor: "black",
+            backgroundColor: 'black',
             flex: 1,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
-
           {mute ? (
             <React.Fragment>
               <Text
                 style={{
-                  color: "white",
-                  textAlign: "center",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  color: 'white',
+                  textAlign: 'center',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 Silenciar
-          </Text>
-              <Icon
-                style={{ marginLeft: 10, color: "white" }}
-                size={30}
-                name="md-volume-off"
-              />
+              </Text>
+              <Icon style={{ marginLeft: 10, color: 'white' }} size={30} name="md-volume-off" />
             </React.Fragment>
           ) : (
-              <React.Fragment>
-                <Text
-                  style={{
-                    color: "white",
-                    textAlign: "center",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  Activar volumen
-          </Text>
-                <Icon
-                  style={{ marginLeft: 10, color: "white" }}
-                  size={30}
-                  name="md-volume-high"
-                />
-              </React.Fragment>
-            )}
-
+            <React.Fragment>
+              <Text
+                style={{
+                  color: 'white',
+                  textAlign: 'center',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                Activar volumen
+              </Text>
+              <Icon style={{ marginLeft: 10, color: 'white' }} size={30} name="md-volume-high" />
+            </React.Fragment>
+          )}
         </TouchableOpacity>
       </View>
     );
