@@ -28,31 +28,30 @@ export const arre = [
 
   //**************************************************** */
   {
-    tipo: "farmaceutico",
+    tipo: 'farmaceutico',
     atributosBasicos: {
-      gtin: "7730698002125",
-      descripcion: "AMOXIDAL 500 COMPPRIMIDOS",
-      marca: "AMOXIDAL 500 mg x 16 comp",
+      gtin: '7730698002125',
+      descripcion: 'AMOXIDAL 500 COMPPRIMIDOS',
+      marca: 'AMOXIDAL 500 mg x 16 comp',
       contenidoNeto: {
         valor: 16,
-        unidad: "unidades",
+        unidad: 'unidades',
       },
-      foto:
-        "https://www.roemmers.com.uy/wp-content/uploads/2018/09/Amoxidal500x16.jpg",
+      foto: 'https://www.roemmers.com.uy/wp-content/uploads/2018/09/Amoxidal500x16.jpg',
     },
-    formaFarmaceutica: "comprimidos",
-    viaAdministracion: "oral",
+    formaFarmaceutica: 'comprimidos',
+    viaAdministracion: 'oral',
 
     principioActivo: [
       {
-        nombre: "AMOXICILINA",
+        nombre: 'AMOXICILINA',
         concentracion: {
           valor: 500,
-          unidad: "mg",
+          unidad: 'mg',
         },
         enMedio: {
           valor: 1,
-          unidad: "comprimido",
+          unidad: 'comprimido',
         },
       },
     ],
@@ -71,40 +70,40 @@ export const arre = [
     },
   },
   {
-    tipo: "farmaceutico",
+    tipo: 'farmaceutico',
     atributosBasicos: {
-      gtin: "7730215000986",
-      descripcion: "SERFLU 250 AEROSOL",
-      marca: "SERFLU",
+      gtin: '7730215000986',
+      descripcion: 'SERFLU 250 AEROSOL',
+      marca: 'SERFLU',
       contenidoNeto: {
         valor: 120,
-        unidad: "Inhalaciones",
+        unidad: 'Inhalaciones',
       },
-      foto: "https://www.haymann.com.uy/img/productos/neumologia/serflu.png",
+      foto: 'https://www.haymann.com.uy/img/productos/neumologia/serflu.png',
     },
-    formaFarmaceutica: "Aerosol",
-    viaAdministracion: "Inhalatoria oral",
+    formaFarmaceutica: 'Aerosol',
+    viaAdministracion: 'Inhalatoria oral',
     principioActivo: [
       {
-        nombre: "Fluticasona propionato",
+        nombre: 'Fluticasona propionato',
         concentracion: {
           valor: 0.25,
-          unidad: "mg",
+          unidad: 'mg',
         },
         enMedio: {
           valor: 1,
-          unidad: "Inhalación",
+          unidad: 'Inhalación',
         },
       },
       {
-        nombre: "Salmeterol xinafoato",
+        nombre: 'Salmeterol xinafoato',
         concentracion: {
           valor: 0.0363,
-          unidad: "mg",
+          unidad: 'mg',
         },
         enMedio: {
           valor: 1,
-          unidad: "Inhalación",
+          unidad: 'Inhalación',
         },
       },
     ],
@@ -123,37 +122,36 @@ export const arre = [
   },
 
   {
-    tipo: "farmaceutico",
+    tipo: 'farmaceutico',
     atributosBasicos: {
-      gtin: "7730215000740",
-      descripcion: "MONTELAIR 10 MG",
-      marca: "MONTELAIR",
+      gtin: '7730215000740',
+      descripcion: 'MONTELAIR 10 MG',
+      marca: 'MONTELAIR',
       contenidoNeto: {
         valor: 10,
-        unidad: "unidades",
+        unidad: 'unidades',
       },
-      foto:
-        "https://www.haymann.com.uy/img/productos/antialergicos/histapin.png",
+      foto: 'https://www.haymann.com.uy/img/productos/antialergicos/histapin.png',
     },
-    formaFarmaceutica: "Comprimidos recubiertos",
-    viaAdministracion: "oral",
+    formaFarmaceutica: 'Comprimidos recubiertos',
+    viaAdministracion: 'oral',
     principioActivo: [
-      { 
-        nombre: "Montelukast",
+      {
+        nombre: 'Montelukast',
         concentracion: {
           valor: 10,
-          unidad: "mg",
+          unidad: 'mg',
         },
         enMedio: {
           valor: 1,
-          unidad: "comprimido",
+          unidad: 'comprimido',
         },
       },
     ],
     alertasyAvisos: [
       {
-        id: "lac",
-        alerta: "Contiene Lactosa",
+        id: 'lac',
+        alerta: 'Contiene Lactosa',
       },
     ],
     kitPromocional: [

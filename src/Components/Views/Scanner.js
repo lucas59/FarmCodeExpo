@@ -1,18 +1,15 @@
-import React, { useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, Vibration } from "react-native";
-import { styles } from "../../Styles/StylesGenerals";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
-import FooterScanner from "../Scanner/FooterScanner";
-import ConfirmScan from "../Scanner/ConfirmScan";
-import Camera from "../Scanner/Camera";
-import LogoRonda from "../../../assets/logo-ronda.svg";
-import { notifySound, notifyWelcome, notifySuccess, notifyError } from "../../Utils/UtilsProducts";
-import { notifiTorchOff, notifiTorchOn, notifyOnCamera } from "../../Utils/UtilsGenerals";
-import { connect } from "react-redux";
-import { set_manual_code } from "../../Redux/Actions/ScannerActions";
-import { BackHandler } from "react-native";
-import { Alert } from "react-native";
+import React from 'react';
+import { Alert, BackHandler, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { connect } from 'react-redux';
+import LogoRonda from '../../../assets/logo-ronda.svg';
+import { set_manual_code } from '../../Redux/Actions/ScannerActions';
+import { styles } from '../../Styles/StylesGenerals';
+import { notifiTorchOff, notifiTorchOn, notifyOnCamera } from '../../Utils/UtilsGenerals';
+import { notifySound, notifySuccess, notifyWelcome } from '../../Utils/UtilsProducts';
+import Camera from '../Scanner/Camera';
+import ConfirmScan from '../Scanner/ConfirmScan';
+import FooterScanner from '../Scanner/FooterScanner';
 
 class Scanner extends React.Component {
   constructor(props) {
@@ -23,7 +20,7 @@ class Scanner extends React.Component {
       scan: false,
       step: 0,
       codeManual: false,
-      mute: true
+      mute: true,
     };
   }
 
@@ -31,36 +28,32 @@ class Scanner extends React.Component {
     if (this.props.scanner.codeManual) {
       this.props.dispatch(set_manual_code(false));
     } else {
-      Alert.alert("¡Espera!", "¿Seguro de que quieres salir de la aplicación?", [
+      Alert.alert('¡Espera!', '¿Seguro de que quieres salir de la aplicación?', [
         {
-          text: "Cancelar",
+          text: 'Cancelar',
           onPress: () => null,
         },
-        { text: "Sí", onPress: () => BackHandler.exitApp() }
+        { text: 'Sí', onPress: () => BackHandler.exitApp() },
       ]);
     }
     return true;
   };
 
   componentDidMount() {
-    console.log("manualCode", this.props.scanner.codeManual);
+    console.log('manualCode', this.props.scanner.codeManual);
     this.props.navigation.setParams({
       handleTorch: this.handleTorch,
     });
     notifySuccess().then(() => {
       notifyWelcome();
-    })
+    });
 
-    this.backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      this.backAction
-    );
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.backAction);
   }
 
   componentWillUnmount() {
     this.backHandler.remove();
     //BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-
   }
 
   handleTorch = () => {
@@ -76,9 +69,7 @@ class Scanner extends React.Component {
     } else {
       notifiTorchOff();
     }
-
   };
-
 
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
@@ -90,13 +81,12 @@ class Scanner extends React.Component {
             <TouchableOpacity
               onPress={() => {
                 navigation.toggleDrawer();
-
               }}
               style={{
                 width: 80,
-                alignContent: "center",
-                justifyContent: "center",
-                flexDirection: "row",
+                alignContent: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
               }}
               accessible={true}
               accessibilityLabel="Menu lateral"
@@ -111,13 +101,12 @@ class Scanner extends React.Component {
           </View>
 
           <View style={{ display: 'flex' }}>
-
             <TouchableOpacity
               style={{
                 width: 80,
-                alignContent: "center",
-                justifyContent: "center",
-                flexDirection: "row",
+                alignContent: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
               }}
             >
               <Icon
@@ -126,7 +115,7 @@ class Scanner extends React.Component {
                 }}
                 accessible={true}
                 accessibilityLabel="Linterna"
-                style={{ width: 50, marginLeft: "auto", marginRight: "auto" }}
+                style={{ width: 50, marginLeft: 'auto', marginRight: 'auto' }}
                 name="white-balance-sunny"
                 color="white"
                 size={40}
@@ -138,10 +127,10 @@ class Scanner extends React.Component {
       headerRight: (
         <View
           style={{
-            alignContent: "flex-end",
-            alignItems: "flex-end",
-            justifyContent: "flex-end",
-            flexDirection: "row",
+            alignContent: 'flex-end',
+            alignItems: 'flex-end',
+            justifyContent: 'flex-end',
+            flexDirection: 'row',
             marginHorizontal: 10,
           }}
         >
@@ -154,7 +143,7 @@ class Scanner extends React.Component {
   ConfirmScan = () => {
     notifyOnCamera().then(() => {
       this.setState({ step: 1 });
-    })
+    });
   };
 
   changeCodeManual = () => {
@@ -162,13 +151,10 @@ class Scanner extends React.Component {
     this.props.dispatch(set_manual_code(!this.props.scanner.manualCode));
   };
 
-
-
   changeMute = () => {
-    this.setState({ mute: !this.state.mute })
+    this.setState({ mute: !this.state.mute });
     notifySound(!this.state.mute);
-  }
-
+  };
 
   render() {
     const { step, torchOn } = this.state;
@@ -176,25 +162,24 @@ class Scanner extends React.Component {
     const stylesCamera = StyleSheet.create({
       container: {
         flex: 1,
-        flexDirection: "column",
-        backgroundColor: "black",
+        flexDirection: 'column',
+        backgroundColor: 'black',
       },
       preview: {
         flex: 1,
-        justifyContent: "flex-end",
-        alignItems: "center",
+        justifyContent: 'flex-end',
+        alignItems: 'center',
       },
       capture: {
         flex: 0,
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         borderRadius: 5,
         padding: 15,
         paddingHorizontal: 20,
-        alignSelf: "center",
+        alignSelf: 'center',
         margin: 20,
       },
     });
-
 
     return (
       <View style={stylesCamera.container}>
@@ -210,14 +195,19 @@ class Scanner extends React.Component {
           />
         )}
 
-        <FooterScanner changeMute={this.changeMute} mute={this.state.mute} codeManualVisible={this.props.scanner.manualCode} codeManual={this.changeCodeManual} />
+        <FooterScanner
+          changeMute={this.changeMute}
+          mute={this.state.mute}
+          codeManualVisible={this.props.scanner.manualCode}
+          codeManual={this.changeCodeManual}
+        />
       </View>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  return state
-}
+  return state;
+};
 
 export default connect(mapStateToProps)(Scanner);
