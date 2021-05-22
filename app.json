@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Etiqueta Virtual",
-    "slug": "FarmCode",
+    "slug": "FarmaCode",
     "platforms": [
       "ios",
       "android",
@@ -17,11 +17,12 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "com.lucas59.FarmCode",
+      "bundleIdentifier": "com.etiqueta.virtual",
       "buildNumber": "1.0.0"
         },
     "android": {
-      "package": "com.lucas59.FarmCode",
+      "package": "com.etiqueta.virtual",
+      "permissions":["CAMERA", "VIBRATE"],
       "versionCode": 1
     },
     "packagerOpts": {
