@@ -1,21 +1,19 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
-import { Divider } from 'react-native-elements';
-import { styles } from '../../Styles/StylesGenerals';
-import { readProduct, mute, notifyOnCamera, sizeAlertsTrue } from '../../Utils/UtilsGenerals';
-import ItemInfo from '../Product/ItemInfo';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import IconFontisto from 'react-native-vector-icons/Fontisto';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Speech from 'expo-speech';
-
-import LogoRonda from '../../../assets/logo-ronda.svg';
-import CardPreview from '../Product/CardPreview';
-import { findProduct, findProductFromKit } from '../../Utils/UtilsSession';
-import { notifyErrorServerConect } from '../../Utils/UtilsProducts';
+import React from 'react';
+import { BackHandler, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Divider } from 'react-native-elements';
+import IconFontisto from 'react-native-vector-icons/Fontisto';
+import { default as Icon, default as MaterialCommunityIcons } from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
+import LogoRonda from '../../../assets/logo-ronda.svg';
 import { set_manual_code } from '../../Redux/Actions/ScannerActions';
-import { BackHandler } from 'react-native';
+import { styles } from '../../Styles/StylesGenerals';
+import { mute, notifyOnCamera, readProduct, sizeAlertsTrue } from '../../Utils/UtilsGenerals';
+import { notifyErrorServerConect } from '../../Utils/UtilsProducts';
+import { findProduct, findProductFromKit } from '../../Utils/UtilsSession';
+import CardPreview from '../Product/CardPreview';
+import ItemInfo from '../Product/ItemInfo';
+
 
 class Product extends React.Component {
   constructor(props) {

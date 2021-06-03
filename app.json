@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Etiqueta Virtual",
-    "slug": "FarmCode",
+    "slug": "Farmacode",
     "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -11,12 +11,12 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "bundleIdentifier": "com.etiqueta.virtual",
+      "bundleIdentifier": "org.gs1uy.etiquetavirtual",
       "buildNumber": "1.0.0"
     },
     "android": {
       "package": "com.etiqueta.virtual",
-      "permissions":["CAMERA", "VIBRATE"],
+      "permissions": ["CAMERA", "VIBRATE"],
       "versionCode": 1
     },
     "packagerOpts": {
