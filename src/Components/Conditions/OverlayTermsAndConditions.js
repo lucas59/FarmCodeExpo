@@ -28,7 +28,7 @@ export default function OverlayTermsAndConditions(props) {
           <Icon name="text-document" color={'#6aa6ff'} size={60} />
           <View style={{ alignItems: 'center' }}>
             <Text style={styles.title}>Términos y Condiciones</Text>
-            <Text style={styles.subtitle}>Actualizado 10 Noviembre, 2020</Text>
+            <Text style={styles.subtitle}>Actualizado 10 Junio, 2021</Text>
           </View>
         </View>
         <ScrollView indicatorStyle="black" style={styles.body}>
