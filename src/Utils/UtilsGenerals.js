@@ -1,27 +1,21 @@
+import * as Speech from 'expo-speech'
 import { Audio } from 'expo-av';
-import * as Speech from 'expo-speech';
 import { AccessibilityInfo, Alert, AsyncStorage, Vibration } from 'react-native';
 import { arre } from './jsonPruebas';
 
 export async function searchProduct(code, type) {
   return new Promise(async (res, rej) => {
     var position = await AsyncStorage.getItem('position');
-    console.log(position);
-
     if (position == null) {
       await AsyncStorage.setItem('position', '0');
-      console.log('sale: ', 0);
       res(arre[0]);
     } else if (position == '0') {
-      console.log('sale: ', 1);
       await AsyncStorage.setItem('position', '1');
       res(arre[1]);
     } else if (position == '1') {
-      console.log('sale: ', 2);
       await AsyncStorage.setItem('position', '2');
       res(arre[2]);
     } else if (position == '2') {
-      console.log('sale: ', 0);
       await AsyncStorage.setItem('position', '0');
       res(arre[0]);
     }
@@ -30,12 +24,15 @@ export async function searchProduct(code, type) {
 
 export async function readProduct(parent, json) {
   return new Promise(async (res, rej) => {
+    
+    await Speech.stop()
     Speech.speak(json.atributosBasicos.descripcion.toLowerCase(), {
-      // nombre comercial
       language: 'es-419',
       _voiceIndex: 100,
     });
-
+    const isSpeaking = await Speech.isSpeakingAsync();
+    console.log(isSpeaking);    
+  
     if (json.kitPromocional.length > 0) {
       Speech.speak('Productos contenidos en este KIT : ' + json.kitPromocional.length, {
         language: 'es-419',
@@ -132,7 +129,6 @@ export async function readProduct(parent, json) {
         language: 'es-419',
         _voiceIndex: 100,
         onDone: () => {
-          console.log('finish speak');
           res();
         },
       });
@@ -141,11 +137,9 @@ export async function readProduct(parent, json) {
 }
 
 export function sizeAlertsTrue(obj) {
-  console.log(obj);
   return new Promise((res, rej) => {
     let size = 0;
     for (const key in obj) {
-      console.log('Key: ', obj[key]);
       if (obj[key] === true) {
         size++;
       }

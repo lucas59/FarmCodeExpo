@@ -1,12 +1,20 @@
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera as Cam } from 'expo-camera';
-import * as Speech from 'expo-speech';
 import React, { useEffect, useState } from 'react';
+import { Dimensions } from 'react-native';
+import { BackHandler } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
+import { Button } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
-import { notifyError, notifyErrorServerConect, notifySuccess } from '../../Utils/UtilsProducts';
+import {
+  notifyError,
+  notifyErrorNotProduct,
+  notifyErrorServerConect,
+  notifyMessage,
+  notifySuccess,
+} from '../../Utils/UtilsProducts';
 import { findProduct } from '../../Utils/UtilsSession';
 import ModalCodeManual from './ModalCodeManual';
 
@@ -15,8 +23,11 @@ export default function Camera(props) {
   const [scanned, setScanned] = useState(false);
   const [modalNotProduct, setModalNotProduct] = useState(false);
   const manualCode = useSelector((state) => state.scanner.manualCode);
+  const [messageError, setMessageError] = useState('');
 
-  console.log('manualCode: ', manualCode);
+  const { height, width } = Dimensions.get('window');
+  const maskRowHeight = Math.round((height - 300) / 20);
+  const maskColWidth = (width - 300) / 2;
 
   useEffect(() => {
     (async () => {
@@ -35,7 +46,7 @@ export default function Camera(props) {
     notifySuccess()
       .then(() => {
         if (data) {
-          findProduct(data)
+          findProduct(props.token, data)
             .then((response) => {
               if (response !== null) {
                 const product = response.data;
@@ -47,21 +58,20 @@ export default function Camera(props) {
                   });
                 } else {
                   if (!modalNotProduct) {
-                    setModalNotProduct(true);
-                    notifyError();
-                    Speech.speak('Error, el producto escaneado no esta disponible. Intente nuevamente.', {
-                      language: 'es-419',
-                      onDone: () => {
-                        setModalNotProduct(false);
-                        setScanned(false);
-                      },
+                    let text = 'Información no provista por el laboratorio.';
+                    setMessageError(text);
+                    notifyError().then(() => {
+                      notifyMessage(text);
                     });
+                    setModalNotProduct(true);
                   }
                 }
               }
             })
             .catch((err) => {
-              console.log('Error: ', err);
+              console.log(err);
+              let text = 'Error de conexión con el servidor';
+              setMessageError(text);
               notifyErrorServerConect().then(() => {
                 setScanned(false);
               });
@@ -70,7 +80,6 @@ export default function Camera(props) {
       })
       .catch((err) => {
         console.log(err);
-        console.info(err);
       });
   };
 
@@ -80,6 +89,11 @@ export default function Camera(props) {
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
+
+  const closeModalNotProduct = () => {
+    setModalNotProduct(false);
+    setScanned(false);
+  };
 
   return (
     <View
@@ -104,8 +118,17 @@ export default function Camera(props) {
             BarCodeScanner.Constants.Type.upc7,
           ],
         }}
-      />
-
+      >
+        <View style={styles.maskOutter}>
+          <View style={[{ flex: maskRowHeight }, styles.maskRow, styles.maskFrame]} />
+          <View style={[{ flex: 30 }, styles.maskCenter]}>
+            <View style={[{ width: maskColWidth }, styles.maskFrame]} />
+            <View style={styles.maskInner} />
+            <View style={[{ width: maskColWidth }, styles.maskFrame]} />
+          </View>
+          <View style={[{ flex: maskRowHeight }, styles.maskRow, styles.maskFrame]} />
+        </View>
+      </Cam>
       <Modal
         animationIn={'bounceIn'}
         animationOut={'bounceOut'}
@@ -159,11 +182,47 @@ export default function Camera(props) {
             <Text style={{ textAlign: 'center', marginTop: 10, width: '100%', fontSize: 18, color: '#343a40' }}>
               Información no provista por el laboratorio
             </Text>
+            <Button
+              onPress={closeModalNotProduct}
+              buttonStyle={{ backgroundColor: '#dc3545', marginTop: 20 }}
+              title="Cerrar"
+            />
           </View>
         </View>
       </Modal>
-
-      <ModalCodeManual visible={manualCode} onSearch={handleBarCodeScanned} codeManual={props.codeManual} />
+      <ModalCodeManual visible={manualCode} onSearch={handleBarCodeScanned} />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  cameraView: {
+    flex: 1,
+    justifyContent: 'flex-start',
+  },
+  maskOutter: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  maskInner: {
+    width: 300,
+    backgroundColor: 'transparent',
+    borderColor: 'white',
+    borderWidth: 1,
+  },
+  maskFrame: {
+    backgroundColor: 'rgba(1,1,1,0.6)',
+  },
+  maskRow: {
+    width: '100%',
+  },
+  maskCenter: { flexDirection: 'row' },
+});

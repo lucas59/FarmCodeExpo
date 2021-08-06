@@ -5,9 +5,11 @@ import { Text } from 'react-native-elements';
 import { SkypeIndicator } from 'react-native-indicators';
 import LogoRonda from '../../../assets/logo-ronda.svg';
 import { notifyConditionsShow } from '../../Utils/UtilsGenerals';
+import SpeechSingleton from '../../Utils/SpeechSingleton';
+
 
 export default class Home extends React.Component {
-  componentDidMount(props) {
+  componentDidMount() {
     var cont = 0;
     this._interval = setInterval(async () => {
       cont++;
@@ -33,6 +35,8 @@ export default class Home extends React.Component {
   });
 
   render() {
+    console.log(this.props);
+
     return (
       <View
         style={{
@@ -50,7 +54,9 @@ export default class Home extends React.Component {
         <Text style={{ color: 'white', letterSpacing: 3 }} h2>
           VIRTUAL
         </Text>
-
+        <Text style={{ color: 'white', letterSpacing: 3 }} h2>
+          FARMA
+        </Text>
         <View
           style={{
             marginTop: 30,

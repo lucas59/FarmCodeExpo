@@ -37,6 +37,7 @@ function CustomDrawerContent({ navigation }) {
           source={require('./assets/logo-ronda.png')}
           style={{ width: 200, height: 60, marginRight: 'auto', marginLeft: 'auto', marginVertical: 50 }}
         />
+        <Text style={{ color: '#0e2a47', textAlign:'center', fontWeight: 'bold' }}>Etiqueta virtual Farma</Text>
       </View>
       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{ color: 'gray' }}>{Constants.manifest.version}</Text>

@@ -7,11 +7,9 @@ export default function ModalCodeManual(props) {
 
   const onSearch = function () {
     if (code) {
-      console.log(code.length);
       let params = {
         data: code,
       };
-      console.log(params);
       Keyboard.dismiss();
       props.onSearch(params);
     }

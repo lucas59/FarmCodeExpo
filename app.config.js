@@ -1,5 +1,5 @@
 export default ({ config }) => {
-  config.name = 'Etiqueta Virtual';
+  config.name = 'Etiqueta virtual Farma';
   return {
     ...config,
   };

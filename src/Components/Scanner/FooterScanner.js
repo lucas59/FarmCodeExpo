@@ -13,7 +13,6 @@ export default class FooterScanner extends React.Component {
   }
 
   onPressCodeManual = () => {
-    alertManualCode();
     this.props.codeManual();
   };
 

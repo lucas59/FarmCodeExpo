@@ -3,17 +3,20 @@ import React from 'react';
 import { BackHandler, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import IconFontisto from 'react-native-vector-icons/Fontisto';
-import { default as Icon, default as MaterialCommunityIcons } from 'react-native-vector-icons/MaterialCommunityIcons';
+import {
+  default as Icon,
+  default as MaterialCommunityIcons,
+} from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import LogoRonda from '../../../assets/logo-ronda.svg';
 import { set_manual_code } from '../../Redux/Actions/ScannerActions';
 import { styles } from '../../Styles/StylesGenerals';
+import SpeechSingleton from '../../Utils/SpeechSingleton';
 import { mute, notifyOnCamera, readProduct, sizeAlertsTrue } from '../../Utils/UtilsGenerals';
 import { notifyErrorServerConect } from '../../Utils/UtilsProducts';
 import { findProduct, findProductFromKit } from '../../Utils/UtilsSession';
 import CardPreview from '../Product/CardPreview';
 import ItemInfo from '../Product/ItemInfo';
-
 
 class Product extends React.Component {
   constructor(props) {
@@ -45,17 +48,16 @@ class Product extends React.Component {
     const { product, mute, parent } = this.state;
 
     this.props.dispatch(set_manual_code(false));
-    console.log(this.props);
     if (mute) {
-      readProduct(parent, product);
+      SpeechSingleton.readProduct2(parent, product);
     }
 
     this.uploadKit();
 
     sizeAlertsTrue(product.alertasyAvisos).then((aditionInfoSize) => {
-      console.log('asdqwe: ', aditionInfoSize);
       this.setState({ aditionInfoSize: aditionInfoSize });
     });
+
 
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.backAction);
   }
@@ -167,10 +169,8 @@ class Product extends React.Component {
 
   render() {
     const { product, parent, loading, kitProducts, aditionInfoSize } = this.state;
-    console.log(product.atributosBasicos.contenidoPorUso);
     let block = loading ? 'none' : 'auto';
 
-    console.log('aditionInfoSize ', aditionInfoSize);
     return (
       <View pointerEvents={block} style={{ flex: 1 }}>
         <ScrollView>
@@ -222,7 +222,6 @@ class Product extends React.Component {
             >
               <MaterialCommunityIcons size={40} color="#0e2a47" name="medical-bag" />
               <ItemInfo value={product.atributosBasicos.descripcion} />
-              {console.log('kIT ', product.kitPromocional)}
               {(product.kitPromocional.length === 0 || parent) && (
                 <>
                   <ItemInfo value={product.formaFarmaceutica} title={'Presentación: '} />

@@ -6,7 +6,6 @@ import { url_product } from '../Config/Config';
 
 export function searchProduct(token, gtin) {
   return new Promise((res, rej) => {
-    console.log(url_product + gtin);
     try {
       Axios.get(url_product + gtin, {
         headers: { Authorization: `Bearer ${token}` },
@@ -25,7 +24,7 @@ export function searchProduct(token, gtin) {
 
 export async function errorProduct() {
   return new Promise(async (res, rej) => {
-    await Speech.speak('Error, el producto escaneado no esta disponible. Intente nuevamente.', {
+    await Speech.speak('Error, el producto escaneado no esta disponible.', {
       language: 'es-419',
       onDone: () => {
         res();
@@ -69,13 +68,38 @@ export async function notifySuccess() {
 }
 
 export async function notifyError() {
+  return new Promise((res, rej) => {
+    try {
+      Audio.Sound.createAsync(
+        require('../../assets/error.mp3'),
+        {
+          shouldPlay: true,
+        },
+        (status) => {
+          if (status.didJustFinish) {
+            res();
+          }
+        },
+      );
+      // Your sound is playing!
+    } catch (error) {
+      // An error occurred!
+      console.log('Notify error: ', error);
+      rej();
+    }
+  });
+}
+
+export async function notifyMessage(message) {
   try {
-    const { sound: soundObject, status } = await Audio.Sound.createAsync(require('../../assets/error.mp3'), {
-      shouldPlay: true,
+    Speech.speak(message, {
+      language: 'es-419',
+      onDone: () => {
+        //res();
+      },
     });
-    // Your sound is playing!
-  } catch (error) {
-    // An error occurred!
+  } catch (e) {
+    console.log(e);
   }
 }
 

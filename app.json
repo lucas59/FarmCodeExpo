@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Etiqueta Virtual",
+    "name": "Etiqueta virtual Farma",
     "slug": "Farmcode",
     "platforms": ["ios", "android", "web"],
-    "version": "2.0.0",
+    "version": "4.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "updates": {
@@ -12,15 +12,15 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "org.gs1uy.etiquetavirtual",
-      "buildNumber": "1.1.0",
+      "buildNumber": "4.0.0",
       "infoPlist": {
-        "NSCameraUsageDescription": "Permite a Etiqueta Virtual usar la cámara para escanear el código de barras del medicamento"
+        "NSCameraUsageDescription": "Permite a Etiqueta Virtual Farma usar la cámara para escanear el código de barras del medicamento"
       }
     },
     "android": {
       "package": "com.etiqueta.virtual",
       "permissions": ["CAMERA", "VIBRATE"],
-      "versionCode": 2
+      "versionCode": 4
     },
     "packagerOpts": {
       "config": "metro.config.js",

@@ -4,9 +4,8 @@ import { AccessibilityInfo, Vibration } from 'react-native';
 import Axios from 'axios';
 import { notifyErrorServerConect, searchProduct } from './UtilsProducts';
 
-function newSession() {
+export function newSession() {
   return new Promise((res, rej) => {
-    console.log('URL', url_session);
     Axios.post(url_session, {
       usuario: 'fbrasesco@gs1uy.org',
       contrasena: '12345678',
@@ -37,38 +36,53 @@ export function notifyConditionsFail() {
   });
 }
 
-export function findProduct(gtin) {
-  return new Promise((res, rej) => {
-    newSession()
-      .then((response) => {
-        // abro una session
-        if (response.data.code == 200) {
-          const token = response.data.data.token;
-          searchProduct(token, gtin)
-            .then((response) => {
-              console.log('Response: ', response.data);
-              if (response.data != undefined && response.data.code == 200) {
-                res(response.data);
-              } else {
-                rej();
-              }
-            })
-            .catch((err) => {
-              console.log('ErrorP: ', err);
-              alert('Error al buscar el producto', JSON.stringify(err));
-              rej();
-              notifyErrorServerConect().then(() => {
-                setScanned(false); //vuelvo a setear el escanner
-              });
-            });
-        }
-      })
-      .catch((err) => {
-        notifyErrorServerConect().then(() => {
-          setScanned(false);
+export function findProduct(token, gtin) {
+  return new Promise(async (res, rej) => {
+    if (token) {
+      searchProduct(token, gtin)
+        .then((response) => {
+          if (response.data != undefined && response.data.code == 200) {
+            res(response.data);
+          } else {
+            rej();
+          }
+        })
+        .catch((err) => {
+          alert('Error al buscar el producto', JSON.stringify(err));
+          rej();
+          notifyErrorServerConect().then(() => {
+            setScanned(false); //vuelvo a setear el escanner
+          });
         });
-        console.log('Error: ', err);
-      });
+    } else {
+      newSession()
+        .then((response) => {
+          if (response.data.code == 200) {
+            const token = response.data.data.token;
+            searchProduct(token, gtin)
+              .then((response) => {
+                if (response.data != undefined && response.data.code == 200) {
+                  res(response.data);
+                } else {
+                  rej();
+                }
+              })
+              .catch((err) => {
+                alert('Error al buscar el producto', JSON.stringify(err));
+                rej();
+                notifyErrorServerConect().then(() => {
+                  setScanned(false); //vuelvo a setear el escanner
+                });
+              });
+          }
+        })
+        .catch((err) => {
+          notifyErrorServerConect().then(() => {
+            setScanned(false);
+          });
+          console.log('Error: ', err);
+        });
+    }
   });
 }
 
