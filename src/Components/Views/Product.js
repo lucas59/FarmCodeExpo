@@ -58,7 +58,6 @@ class Product extends React.Component {
       this.setState({ aditionInfoSize: aditionInfoSize });
     });
 
-
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.backAction);
   }
 

@@ -15,9 +15,11 @@ export function searchProduct(token, gtin) {
         })
         .catch((err) => {
           console.log('ERROR: ', err);
+          rej();
         });
     } catch (err) {
       console.log(err);
+      rej();
     }
   });
 }
@@ -57,14 +59,24 @@ export function alertManualCode() {
 }
 
 export async function notifySuccess() {
-  try {
-    const { sound: soundObject, status } = await Audio.Sound.createAsync(require('../../assets/success.mp3'), {
-      shouldPlay: true,
-    });
-    // Your sound is playing!
-  } catch (error) {
-    // An error occurred!
-  }
+  return new Promise((res, rej) => {
+    try {
+      Audio.Sound.createAsync(
+        require('../../assets/success.mp3'),
+        {
+          shouldPlay: true,
+        },
+        (status) => {
+          if (status.didJustFinish) {
+            res();
+          }
+        },
+      );
+    } catch (error) {
+      console.log('Success error: ', error);
+      rej();
+    }
+  });
 }
 
 export async function notifyError() {
@@ -91,16 +103,13 @@ export async function notifyError() {
 }
 
 export async function notifyMessage(message) {
-  try {
+  return new Promise(async (res, rej) => {
     Speech.speak(message, {
       language: 'es-419',
-      onDone: () => {
-        //res();
-      },
+      _voiceIndex: 100,
+      onDone: () => res(),
     });
-  } catch (e) {
-    console.log(e);
-  }
+  });
 }
 
 export function notifyErrorServerConect() {

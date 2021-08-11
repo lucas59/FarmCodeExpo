@@ -1,20 +1,13 @@
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera as Cam } from 'expo-camera';
 import React, { useEffect, useState } from 'react';
-import { Dimensions } from 'react-native';
-import { BackHandler } from 'react-native';
-import { StyleSheet, Text, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
-import {
-  notifyError,
-  notifyErrorNotProduct,
-  notifyErrorServerConect,
-  notifyMessage,
-  notifySuccess,
-} from '../../Utils/UtilsProducts';
+import SpeechSingleton from '../../Utils/SpeechSingleton';
+import { notifyError, notifyErrorServerConect, notifyMessage, notifySuccess } from '../../Utils/UtilsProducts';
 import { findProduct } from '../../Utils/UtilsSession';
 import ModalCodeManual from './ModalCodeManual';
 
@@ -64,6 +57,7 @@ export default function Camera(props) {
                       notifyMessage(text);
                     });
                     setModalNotProduct(true);
+                    // setScanned(false);
                   }
                 }
               }
@@ -72,14 +66,14 @@ export default function Camera(props) {
               console.log(err);
               let text = 'Error de conexión con el servidor';
               setMessageError(text);
-              notifyErrorServerConect().then(() => {
-                setScanned(false);
-              });
+              notifyErrorServerConect();
+              setScanned(false);
             });
         }
       })
       .catch((err) => {
         console.log(err);
+        setScanned(false);
       });
   };
 
@@ -87,7 +81,7 @@ export default function Camera(props) {
     return <Text>Requesting for camera permission</Text>;
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    return <Text>No acc0p9ot5ess to camera</Text>;
   }
 
   const closeModalNotProduct = () => {

@@ -1,13 +1,12 @@
 import * as Speech from 'expo-speech';
 import { sizeAlertsTrue } from './UtilsGenerals';
 
-
 class SpeechSingleton {
   static instance = null;
 
   static getInstance() {
     if (!SpeechSingleton.instance) {
-        SpeechSingleton.instance = new SpeechSingleton();
+      SpeechSingleton.instance = new SpeechSingleton();
     }
     return SpeechSingleton.instance;
   }
@@ -16,31 +15,41 @@ class SpeechSingleton {
     this.speech = null;
   }
 
+  async stop() {
+    await Speech.stop();
+  }
 
- readProduct2(parent, json) {
+  readProduct2(parent, json) {
     return new Promise(async (res, rej) => {
-      
-      await Speech.stop()
+      await Speech.stop();
       Speech.speak(json.atributosBasicos.descripcion.toLowerCase(), {
         language: 'es-419',
         _voiceIndex: 100,
       });
       const isSpeaking = await Speech.isSpeakingAsync();
-      console.log(isSpeaking);    
-    
+      console.log(isSpeaking);
+
       if (json.kitPromocional.length > 0) {
         Speech.speak('Productos contenidos en este KIT : ' + json.kitPromocional.length, {
           language: 'es-419',
           _voiceIndex: 100,
         });
       }
-  
+
       if (json.kitPromocional.length === 0 || parent) {
-        Speech.speak('Presentación: ' + json.formaFarmaceutica, {
-          language: 'es-419',
-          _voiceIndex: 100,
-        });
-  
+        try {
+          Speech.speak('Presentación: ' + json.formaFarmaceutica, {
+            language: 'es-419',
+            _voiceIndex: 1000,
+            onError: (err) => console.log('Error: ', err),
+            onDone: (err) => console.log('Done: ', err),
+            onBoundary: (err) => console.log('Done: ', err),
+            onStopped: (err) => console.log('Done: ', err),
+            onPause: (err) => console.log(err),
+          });
+        } catch (error) {
+          console.log(error);
+        }
         Speech.speak(
           'Contenido neto: ' +
             json.atributosBasicos.contenidoNeto.valor +
@@ -54,7 +63,7 @@ class SpeechSingleton {
             },
           },
         );
-  
+
         if (json.contenidoPorUso.valor !== '') {
           Speech.speak('Contenido por uso: ' + json.contenidoPorUso.valor + '  ' + json.contenidoPorUso.unidad, {
             language: 'es-419',
@@ -64,25 +73,25 @@ class SpeechSingleton {
             },
           });
         }
-  
+
         Speech.speak('Vía de administración: ' + json.viaAdministracion, {
           language: 'es-419',
           _voiceIndex: 100,
         });
       }
-  
+
       if (json.principioActivo.length > 0) {
         Speech.speak('Principio activo:  ', {
           language: 'es-419',
           _voiceIndex: 100,
         });
-  
+
         json.principioActivo.map((val, i) => {
           Speech.speak(val.nombre.toLowerCase(), {
             language: 'es-419',
             _voiceIndex: 100,
           });
-  
+
           Speech.speak(
             'Concentración: ' +
               val.concentracion.valor +
@@ -102,13 +111,13 @@ class SpeechSingleton {
           );
         });
       }
-  
+
       if (json.alertasyAvisos) {
         let size = await sizeAlertsTrue(json.alertasyAvisos);
         if (size > 0) {
           Speech.speak('Información adicional', { language: 'es-419' });
         }
-  
+
         {
           json.alertasyAvisos.contieneAzucar &&
             Speech.speak('Contiene azucar', { language: 'es-419', _voiceIndex: 100 });
@@ -118,7 +127,7 @@ class SpeechSingleton {
             Speech.speak('Contiene lactosa', { language: 'es-419', _voiceIndex: 100 });
         }
       }
-  
+
       if (json.empresa) {
         Speech.speak('Empresa: ' + json.empresa, {
           language: 'es-419',
@@ -130,9 +139,6 @@ class SpeechSingleton {
       }
     });
   }
-
-
- 
 }
 
 export default SpeechSingleton.getInstance();
