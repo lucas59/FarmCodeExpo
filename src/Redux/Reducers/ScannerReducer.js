@@ -1,7 +1,9 @@
-import { SET_MANUAL_CODE } from './constants';
+import { SET_MANUAL_CODE, SET_STEP, SET_SCANNED } from './constants';
 
 const initialState = {
   manualCode: false,
+  step: 0,
+  scanned: false,
 };
 
 const scannerReducer = (state = initialState, action) => {
@@ -11,6 +13,19 @@ const scannerReducer = (state = initialState, action) => {
         ...state,
         manualCode: action.payload,
       };
+
+    case SET_STEP:
+      return {
+        ...state,
+        step: action.payload,
+      };
+
+    case SET_SCANNED:
+      return {
+        ...state,
+        step: action.payload,
+      };
+
     default:
       return state;
   }

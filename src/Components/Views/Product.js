@@ -9,7 +9,7 @@ import {
 } from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import LogoRonda from '../../../assets/logo-ronda.svg';
-import { set_manual_code } from '../../Redux/Actions/ScannerActions';
+import { set_manual_code, set_step } from '../../Redux/Actions/ScannerActions';
 import { styles } from '../../Styles/StylesGenerals';
 import SpeechSingleton from '../../Utils/SpeechSingleton';
 import { mute, notifyOnCamera, readProduct, sizeAlertsTrue } from '../../Utils/UtilsGenerals';
@@ -44,6 +44,30 @@ class Product extends React.Component {
     return true;
   }
 
+  goBackPress = () => {
+    const { parent } = this.state;
+    mute();
+    this.props.dispatch(set_step(1));
+    console.log('goBack');
+    if (parent) {
+      this.props.navigation.navigate('Scanner');
+    } else {
+      this.props.navigation.navigate('Scanner');
+    }
+    return true;
+  };
+
+  goBack = () => {
+    const { parent } = this.state;
+    mute();
+    this.props.dispatch(set_step(1));
+    console.log('goBack');
+    if (parent) {
+      this.props.navigation.navigate('Scanner');
+    } else {
+      this.props.navigation.navigate('Scanner');
+    }
+  };
   componentDidMount() {
     const { product, mute, parent } = this.state;
 
@@ -58,12 +82,13 @@ class Product extends React.Component {
       this.setState({ aditionInfoSize: aditionInfoSize });
     });
 
-    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.backAction);
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.goBackPress);
   }
 
   componentWillUnmount() {
     this.backHandler.remove();
     //BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    mute();
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -112,18 +137,6 @@ class Product extends React.Component {
         </View>
       ),
     };
-  };
-
-  goBack = () => {
-    const { parent } = this.state;
-    mute();
-    notifyOnCamera().then(() => {
-      if (parent) {
-        this.props.navigation.navigate('Scanner', { step: 1 });
-      } else {
-        this.props.navigation.navigate('Scanner', { step: 1 });
-      }
-    });
   };
 
   goToParent = () => {
@@ -372,7 +385,7 @@ class Product extends React.Component {
         </ScrollView>
 
         {
-          ////////////////////FOOOTERR/////////////////////
+          ////////////////////FOOTER/////////////////////
         }
 
         <View style={styles.footer}>

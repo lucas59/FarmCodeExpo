@@ -67,6 +67,7 @@ export async function notifySuccess() {
           shouldPlay: true,
         },
         (status) => {
+          console.log('didJustFinish', status.didJustFinish);
           if (status.didJustFinish) {
             res();
           }

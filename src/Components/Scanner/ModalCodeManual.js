@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
+import { Touchable, TouchableOpacity } from 'react-native';
 import { Keyboard, View } from 'react-native';
 import { Button, Input } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { useDispatch } from 'react-redux';
+import { set_manual_code } from '../../Redux/Actions/ScannerActions';
 
 export default function ModalCodeManual(props) {
   const [code, setCode] = useState(null);
+  const dispatch = useDispatch();
 
   const onSearch = function () {
     if (code) {
@@ -17,7 +22,7 @@ export default function ModalCodeManual(props) {
 
   if (props.visible) {
     return (
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+      <View on style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
         <View
           style={{
             flex: 1,
@@ -44,6 +49,17 @@ export default function ModalCodeManual(props) {
               width: '90%',
             }}
           >
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                borderRadius: 50,
+              }}
+              onPress={() => dispatch(set_manual_code(false))}
+            >
+              <Icon style={{ width: 25 }} name="ios-close" color={'#2089dc'} size={40}></Icon>
+            </TouchableOpacity>
             <Input
               placeholder="Código"
               style={{ width: '90%' }}
@@ -51,7 +67,7 @@ export default function ModalCodeManual(props) {
               value={code}
               onChangeText={(value) => setCode(value)}
             />
-            <Button title="Buscar" onPress={onSearch} style={{ width: 150 }} type="outline" />
+            <Button title="Buscar" onPress={onSearch} style={{ width: 100 }} type="outline" />
           </View>
         </View>
       </View>

@@ -1,4 +1,4 @@
-import * as Speech from 'expo-speech'
+import * as Speech from 'expo-speech';
 import { Audio } from 'expo-av';
 import { AccessibilityInfo, Alert, AsyncStorage, Vibration } from 'react-native';
 import { arre } from './jsonPruebas';
@@ -24,15 +24,12 @@ export async function searchProduct(code, type) {
 
 export async function readProduct(parent, json) {
   return new Promise(async (res, rej) => {
-    
-    await Speech.stop()
+    await Speech.stop();
     Speech.speak(json.atributosBasicos.descripcion.toLowerCase(), {
       language: 'es-419',
       _voiceIndex: 100,
     });
-    const isSpeaking = await Speech.isSpeakingAsync();
-    console.log(isSpeaking);    
-  
+
     if (json.kitPromocional.length > 0) {
       Speech.speak('Productos contenidos en este KIT : ' + json.kitPromocional.length, {
         language: 'es-419',
@@ -148,8 +145,8 @@ export function sizeAlertsTrue(obj) {
   });
 }
 
-export function mute() {
-  Speech.stop();
+export async function mute() {
+  await Speech.stop();
 }
 
 export function AskPermissionAudio() {
@@ -164,9 +161,8 @@ export function AskPermissionAudio() {
 
 export function notifyOnCamera() {
   return new Promise(async (res, rej) => {
-    await Speech.speak('Cámara activada ', { language: 'es-419' });
-    Vibration.vibrate(500, false);
-    res();
+    // await Vibration.vibrate(500, false);
+    await Speech.speak('Cámara activada ', { language: 'es-419', onDone: () => res() });
   });
 }
 

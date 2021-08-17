@@ -36,6 +36,8 @@ export default function Camera(props) {
 
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
+    console.log('scanned: ', data);
+
     notifySuccess()
       .then(() => {
         if (data) {
@@ -63,9 +65,6 @@ export default function Camera(props) {
               }
             })
             .catch((err) => {
-              console.log(err);
-              let text = 'Error de conexión con el servidor';
-              setMessageError(text);
               notifyErrorServerConect();
               setScanned(false);
             });
@@ -75,6 +74,7 @@ export default function Camera(props) {
         console.log(err);
         setScanned(false);
       });
+    console.log('scannedout');
   };
 
   if (hasPermission === null) {
@@ -88,7 +88,7 @@ export default function Camera(props) {
     setModalNotProduct(false);
     setScanned(false);
   };
-
+  console.log(scanned);
   return (
     <View
       style={{

@@ -71,14 +71,14 @@ export function findProduct(token, gtin) {
                 alert('Error al buscar el producto', JSON.stringify(err));
                 rej();
                 notifyErrorServerConect().then(() => {
-                  setScanned(false); //vuelvo a setear el escanner
+                  rej();
                 });
               });
           }
         })
         .catch((err) => {
           notifyErrorServerConect().then(() => {
-            setScanned(false);
+            rej();
           });
           console.log('Error: ', err);
         });

@@ -1,11 +1,11 @@
-import * as Speech from 'expo-speech'
+import * as Speech from 'expo-speech';
 import React from 'react';
 import { Alert, AppState, BackHandler, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import LogoRonda from '../../../assets/logo-ronda.svg';
 import { set_token } from '../../Redux/Actions/AuthActions';
-import { set_manual_code } from '../../Redux/Actions/ScannerActions';
+import { set_manual_code, set_step } from '../../Redux/Actions/ScannerActions';
 import { styles } from '../../Styles/StylesGenerals';
 import { notifiTorchOff, notifiTorchOn, notifyOnCamera } from '../../Utils/UtilsGenerals';
 import { alertManualCode, notifySound, notifySuccess, notifyWelcome } from '../../Utils/UtilsProducts';
@@ -28,11 +28,13 @@ class Scanner extends React.Component {
   }
 
   backAction = () => {
-    const { step } = this.state;
+    //    const { step } = this.state;
+    const step = this.props.scanner.step;
     if (this.props.scanner.manualCode) {
       this.props.dispatch(set_manual_code(false));
     } else if (step === 1) {
-      this.setState({ step: 0 });
+      //this.setState({ step: 0 });
+      this.props.dispatch(set_step(0));
     } else {
       Alert.alert('¡Espera!', '¿Seguro de que quieres salir de la aplicación?', [
         {
@@ -47,7 +49,13 @@ class Scanner extends React.Component {
   };
 
   componentDidMount() {
-    Speech.stop()
+    Speech.stop();
+    this.focusListener = this.props.navigation.addListener('didFocus', () => {
+      console.log('focus', this.props.scanner);
+      if (this.props.scanner.step == 1) {
+        notifyOnCamera();
+      }
+    });
 
     if (!this.props.auth.token) {
       newSession()
@@ -75,13 +83,15 @@ class Scanner extends React.Component {
   }
   componentWillUnmount() {
     this.backHandler.remove();
+    this.focusListener.remove();
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
   handleAppStateChange = (action) => {
     if (action === 'background') {
-      this.setState({ step: 0 });
-      // this.props.dispatch(set_manual_code(false));
+      // this.setState({ step: 0 });
+
+      this.props.dispatch(set_step(0));
     }
   };
 
@@ -170,15 +180,19 @@ class Scanner extends React.Component {
   };
 
   ConfirmScan = () => {
-    notifyOnCamera().then(() => {});
-    this.setState({ step: 1 });
+    notifyOnCamera();
+    this.props.dispatch(set_step(1));
   };
 
   changeCodeManual = () => {
-    const { step } = this.state;
+    // const { step } = this.state;
+    const step = this.props.scanner.step;
+
     if (step === 0) {
       this.props.dispatch(set_manual_code(true));
-      this.setState({ step: 1 });
+      this.props.dispatch(set_step(1));
+      // this.setState({ step: 1 });
+
       alertManualCode();
     } else {
       this.props.dispatch(set_manual_code(!this.props.scanner.manualCode));
@@ -193,7 +207,9 @@ class Scanner extends React.Component {
   };
 
   render() {
-    const { step, torchOn } = this.state;
+    const { torchOn } = this.state;
+    const step = this.props.scanner.step;
+
     const stylesCamera = StyleSheet.create({
       container: {
         flex: 1,
