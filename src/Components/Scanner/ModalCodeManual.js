@@ -54,11 +54,10 @@ export default function ModalCodeManual(props) {
                 position: 'absolute',
                 top: 0,
                 right: 0,
-                borderRadius: 50,
               }}
               onPress={() => dispatch(set_manual_code(false))}
             >
-              <Icon style={{ width: 25 }} name="ios-close" color={'#2089dc'} size={40}></Icon>
+              <Icon style={{ width: 35 }} name="ios-close" color={'#2089dc'} size={40}></Icon>
             </TouchableOpacity>
             <Input
               placeholder="Código"
@@ -67,7 +66,14 @@ export default function ModalCodeManual(props) {
               value={code}
               onChangeText={(value) => setCode(value)}
             />
-            <Button title="Buscar" onPress={onSearch} style={{ width: 100 }} type="outline" />
+
+            <Button
+              loading={props.loading}
+              title="Buscar"
+              onPress={onSearch}
+              style={{ width: 100 }}
+              type="outline"
+            />
           </View>
         </View>
       </View>

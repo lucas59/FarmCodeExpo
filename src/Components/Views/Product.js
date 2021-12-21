@@ -14,7 +14,7 @@ import { styles } from '../../Styles/StylesGenerals';
 import SpeechSingleton from '../../Utils/SpeechSingleton';
 import { mute, notifyOnCamera, readProduct, sizeAlertsTrue } from '../../Utils/UtilsGenerals';
 import { notifyErrorServerConect } from '../../Utils/UtilsProducts';
-import { findProduct, findProductFromKit } from '../../Utils/UtilsSession';
+import { findProduct, findProductFromKit, newSession } from '../../Utils/UtilsSession';
 import CardPreview from '../Product/CardPreview';
 import ItemInfo from '../Product/ItemInfo';
 
@@ -34,8 +34,16 @@ class Product extends React.Component {
 
   uploadKit() {
     const { product } = this.state;
-    findProductFromKit(product).then(async (arr) => {
-      this.setState({ kitProducts: arr });
+    console.log('products: ', product);
+
+    newSession().then((response) => {
+      if (response.data.code == 200) {
+        const token = response.data.data.token;
+
+        findProductFromKit(token, product).then(async (arr) => {
+          this.setState({ kitProducts: arr });
+        });
+      }
     });
   }
 

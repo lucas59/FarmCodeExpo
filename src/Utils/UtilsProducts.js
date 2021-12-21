@@ -7,6 +7,7 @@ import { url_product } from '../Config/Config';
 export function searchProduct(token, gtin) {
   return new Promise((res, rej) => {
     try {
+      console.log(url_product + gtin);
       Axios.get(url_product + gtin, {
         headers: { Authorization: `Bearer ${token}` },
       })

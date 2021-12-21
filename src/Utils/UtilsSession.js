@@ -37,6 +37,7 @@ export function notifyConditionsFail() {
 }
 
 export function findProduct(token, gtin) {
+  console.log('gtin: ', gtin);
   return new Promise(async (res, rej) => {
     if (token) {
       searchProduct(token, gtin)
@@ -86,13 +87,13 @@ export function findProduct(token, gtin) {
   });
 }
 
-export async function findProductFromKit(product) {
+export async function findProductFromKit(token, product) {
   return new Promise(async (res, rej) => {
     let kit = [];
     if (product && product.kitPromocional.length > 0) {
       for (let index = 0; index < product.kitPromocional.length; index++) {
         const element = product.kitPromocional[index];
-        findProduct(element.gtin)
+        findProduct(token, element.gtin)
           .then((response) => {
             if (response) {
               const newproduct = response.data;

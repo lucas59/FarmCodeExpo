@@ -17,6 +17,7 @@ export default function Camera(props) {
   const [modalNotProduct, setModalNotProduct] = useState(false);
   const manualCode = useSelector((state) => state.scanner.manualCode);
   const [messageError, setMessageError] = useState('');
+  const [loading, setloading] = useState(false);
 
   const { height, width } = Dimensions.get('window');
   const maskRowHeight = Math.round((height - 300) / 20);
@@ -37,7 +38,7 @@ export default function Camera(props) {
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
     console.log('scanned: ', data);
-
+    setloading(true);
     notifySuccess()
       .then(() => {
         if (data) {
@@ -63,10 +64,13 @@ export default function Camera(props) {
                   }
                 }
               }
+              setloading(false);
             })
             .catch((err) => {
+              console.log('Not found product :', err);
               notifyErrorServerConect();
               setScanned(false);
+              setloading(false);
             });
         }
       })
@@ -184,7 +188,7 @@ export default function Camera(props) {
           </View>
         </View>
       </Modal>
-      <ModalCodeManual visible={manualCode} onSearch={handleBarCodeScanned} />
+      <ModalCodeManual loading={loading} visible={manualCode} onSearch={handleBarCodeScanned} />
     </View>
   );
 }
