@@ -1,6 +1,5 @@
-import AsyncStorage from '@react-native-community/async-storage';
 import React from 'react';
-import { Image, Text, View } from 'react-native';
+import { AsyncStorage, Image, Text, View } from 'react-native';
 import { Button } from 'react-native-elements';
 import { StackActions } from 'react-navigation';
 import { styles } from '../../Styles/StylesGenerals';

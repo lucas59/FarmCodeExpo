@@ -1,12 +1,9 @@
-import AsyncStorage from '@react-native-community/async-storage';
 import React from 'react';
-import { View } from 'react-native';
+import { AsyncStorage, View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { SkypeIndicator } from 'react-native-indicators';
 import LogoRonda from '../../../assets/logo-ronda.svg';
 import { notifyConditionsShow } from '../../Utils/UtilsGenerals';
-import SpeechSingleton from '../../Utils/SpeechSingleton';
-
 
 export default class Home extends React.Component {
   componentDidMount() {
