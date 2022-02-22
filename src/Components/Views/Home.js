@@ -1,6 +1,5 @@
-import AsyncStorage from '@react-native-community/async-storage';
 import React from 'react';
-import { View } from 'react-native';
+import { View, AsyncStorage } from 'react-native';
 import { Text } from 'react-native-elements';
 import { SkypeIndicator } from 'react-native-indicators';
 import LogoRonda from '../../../assets/logo-ronda.svg';

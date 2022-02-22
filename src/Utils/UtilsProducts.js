@@ -58,14 +58,18 @@ export function alertManualCode() {
 }
 
 export async function notifySuccess() {
-  try {
-    const { sound: soundObject, status } = await Audio.Sound.createAsync(require('../../assets/success.mp3'), {
-      shouldPlay: true,
-    });
-    // Your sound is playing!
-  } catch (error) {
-    // An error occurred!
-  }
+  return new Promise(async (res, rej) => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(require('../../assets/success.mp3'));
+      await sound.playAsync().finally(() => {
+        console.log('finish success3');
+        res();
+      });
+      console.log('finish success');
+    } catch (error) {
+      // An error occurred!
+    }
+  });
 }
 
 export async function notifyError() {

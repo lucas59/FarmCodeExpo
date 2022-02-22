@@ -32,46 +32,46 @@ export default function Camera(props) {
 
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
-    notifySuccess()
-      .then(() => {
-        if (data) {
-          findProduct(data)
-            .then((response) => {
-              if (response !== null) {
-                const product = response.data;
-                if (product.tipo) {
-                  props.props.navigation.push('Product', {
-                    product: product,
-                    scan: setScanned,
-                    mute: props.mute,
-                  });
-                } else {
-                  if (!modalNotProduct) {
-                    setModalNotProduct(true);
-                    notifyError();
-                    Speech.speak('Error, el producto escaneado no esta disponible. Intente nuevamente.', {
-                      language: 'es-419',
-                      onDone: () => {
-                        setModalNotProduct(false);
-                        setScanned(false);
-                      },
-                    });
-                  }
-                }
-              }
-            })
-            .catch((err) => {
-              console.log('Error: ', err);
-              notifyErrorServerConect().then(() => {
-                setScanned(false);
+    // notifySuccess()
+    //   .then(() => {
+    if (data) {
+      findProduct(data)
+        .then((response) => {
+          if (response !== null) {
+            const product = response.data;
+            if (product.tipo) {
+              props.props.navigation.push('Product', {
+                product: product,
+                scan: setScanned,
+                mute: props.mute,
               });
-            });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        console.info(err);
-      });
+            } else {
+              if (!modalNotProduct) {
+                setModalNotProduct(true);
+                notifyError();
+                Speech.speak('Error, el producto escaneado no esta disponible. Intente nuevamente.', {
+                  language: 'es-419',
+                  onDone: () => {
+                    setModalNotProduct(false);
+                    setScanned(false);
+                  },
+                });
+              }
+            }
+          }
+        })
+        .catch((err) => {
+          console.log('Error: ', err);
+          notifyErrorServerConect().then(() => {
+            setScanned(false);
+          });
+        });
+    }
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    //   console.info(err);
+    // });
   };
 
   if (hasPermission === null) {

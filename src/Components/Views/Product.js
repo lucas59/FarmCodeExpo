@@ -12,7 +12,7 @@ import * as Speech from 'expo-speech';
 import LogoRonda from '../../../assets/logo-ronda.svg';
 import CardPreview from '../Product/CardPreview';
 import { findProduct, findProductFromKit } from '../../Utils/UtilsSession';
-import { notifyErrorServerConect } from '../../Utils/UtilsProducts';
+import { notifyErrorServerConect, notifySuccess } from '../../Utils/UtilsProducts';
 import { connect } from 'react-redux';
 import { set_manual_code } from '../../Redux/Actions/ScannerActions';
 import { BackHandler } from 'react-native';
@@ -45,11 +45,17 @@ class Product extends React.Component {
 
   componentDidMount() {
     const { product, mute, parent } = this.state;
-
     this.props.dispatch(set_manual_code(false));
-    console.log(this.props);
+
     if (mute) {
-      readProduct(parent, product);
+      notifySuccess()
+        .then(async () => {
+          console.log('finish success 2');
+          await readProduct(parent, product);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
 
     this.uploadKit();

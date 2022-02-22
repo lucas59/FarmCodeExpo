@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 import React from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, Text, View, LogBox } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
@@ -14,6 +14,8 @@ import Scanner from './src/Components/Views/Scanner';
 import { mode } from './src/Config/Config';
 import configureStore from './src/Redux/Reducers';
 import { notifyConditionsShow } from './src/Utils/UtilsGenerals';
+
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 const MainNavigator = createStackNavigator({
   Inicio: { screen: Home },
