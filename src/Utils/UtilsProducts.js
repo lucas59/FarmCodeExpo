@@ -15,10 +15,12 @@ export function searchProduct(token, gtin) {
           res(response);
         })
         .catch((err) => {
+          rej(err)
           console.log('ERROR: ', err);
         });
     } catch (err) {
       console.log(err);
+      rej(err);
     }
   });
 }

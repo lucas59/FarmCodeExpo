@@ -56,10 +56,14 @@ export function findProduct(gtin) {
             .catch((err) => {
               console.log('ErrorP: ', err);
               alert('Error al buscar el producto', JSON.stringify(err));
+              notifyErrorServerConect()
+                .then(() => {
+                  setScanned(false); //vuelvo a setear el escanner
+                })
+                .catch((err) => {
+                  rej(err);
+                });
               rej();
-              notifyErrorServerConect().then(() => {
-                setScanned(false); //vuelvo a setear el escanner
-              });
             });
         }
       })
@@ -68,6 +72,7 @@ export function findProduct(gtin) {
           setScanned(false);
         });
         console.log('Error: ', err);
+        rej();
       });
   });
 }

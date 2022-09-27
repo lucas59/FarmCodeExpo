@@ -32,8 +32,7 @@ export default function Camera(props) {
 
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
-    // notifySuccess()
-    //   .then(() => {
+    
     if (data) {
       findProduct(data)
         .then((response) => {
@@ -59,19 +58,16 @@ export default function Camera(props) {
               }
             }
           }
+          Promise.resolve();
         })
         .catch((err) => {
           console.log('Error: ', err);
           notifyErrorServerConect().then(() => {
             setScanned(false);
           });
+          Promise.reject();
         });
     }
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    //   console.info(err);
-    // });
   };
 
   if (hasPermission === null) {
@@ -92,7 +88,6 @@ export default function Camera(props) {
       <Cam
         style={StyleSheet.absoluteFill}
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        onTouchStart={true}
         autoFocus={'on'}
         flashMode={props.torchOn == true ? Cam.Constants.FlashMode.torch : Cam.Constants.FlashMode.off}
         barCodeScannerSettings={{
