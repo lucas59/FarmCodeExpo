@@ -3,7 +3,8 @@
     "name": "Etiqueta Virtual",
     "slug": "FarmCode",
     "platforms": ["ios", "android", "web"],
-    "version": "5.4.0",
+    "version": "5.4.1",
+    "sdkVersion": "49.0.0",
     "orientation": "portrait",
     "icon": "./assets/solidIcon.png",
     "updates": {
@@ -13,7 +14,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "org.gs1uy.etiquetavirtual",
-      "buildNumber": "5.4.0",
+      "buildNumber": "5.4.1",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets."
       }

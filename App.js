@@ -68,7 +68,7 @@ const Navigator = createSwitchNavigator({ Main: Drawer });
 const App = createAppContainer(Navigator);
 
 const store = configureStore();
-
+console.log('store');
 export default () => (
   <Provider store={store}>
     <App />
