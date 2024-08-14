@@ -6,7 +6,7 @@ import LogoRonda from '../../../assets/logo-ronda.svg';
 import { notifyConditionsShow } from '../../Utils/UtilsGenerals';
 
 export default class Home extends React.Component {
-  componentDidMount(props) {
+  componentDidMount() {
     var cont = 0;
     this._interval = setInterval(async () => {
       cont++;
@@ -36,7 +36,6 @@ export default class Home extends React.Component {
       <View
         style={{
           flex: 1,
-          backgroundColor: 'black',
           backgroundColor: '#277FFF',
           justifyContent: 'center',
           alignItems: 'center',

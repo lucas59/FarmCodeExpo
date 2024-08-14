@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, Text, View, AsyncStorage } from 'react-native';
 import { Button } from 'react-native-elements';
-import { StackActions } from 'react-navigation';
+import { StackActions } from '@react-navigation/native';
 import { styles } from '../../Styles/StylesGenerals';
 import { notifyConditionsHidden, notifyConditionsShow } from '../../Utils/UtilsGenerals';
 import OverlayTermsAndConditions from '../Conditions/OverlayTermsAndConditions';

@@ -4,9 +4,12 @@
     "slug": "FarmCode",
     "platforms": ["ios", "android", "web"],
     "version": "5.4.1",
-    "sdkVersion": "49.0.0",
+    "jsEngine": "hermes",
+    "entryPoint": "./App.js",
+    "sdkVersion": "51.0.0",
     "orientation": "portrait",
     "icon": "./assets/solidIcon.png",
+
     "updates": {
       "fallbackToCacheTimeout": 0,
       "enabled": false
@@ -27,5 +30,17 @@
       "config": "metro.config.js",
       "sourceExts": ["js", "jsx", "svg", "ts", "tsx"]
     }
-  }
+  },
+  "plugins": [
+    [
+      "expo-build-properties",
+      {
+        "android": {
+          "compileSdkVersion": 34,
+          "targetSdkVersion": 34,
+          "buildToolsVersion": "34.0.0"
+        }
+      }
+    ]
+  ]
 }
