@@ -69,8 +69,12 @@ const App = createAppContainer(Navigator);
 
 const store = configureStore();
 
-export default () => (
+const AppWrapper = () => (
   <Provider store={store}>
     <App />
   </Provider>
 );
+
+AppWrapper.displayName = 'AppWrapper';
+
+export default AppWrapper;
