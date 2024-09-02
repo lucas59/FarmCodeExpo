@@ -2,12 +2,12 @@ import React from 'react';
 import { Alert, BackHandler, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
-import LogoRonda from '../../../assets/logo-ronda.svg';
-import { set_manual_code } from '../../Redux/Actions/ScannerActions';
+import LogoRonda from '../../../assets/logo-ronda.png';
+import { set_manual_code, set_scanned } from '../../Redux/Actions/ScannerActions';
 import { styles } from '../../Styles/StylesGenerals';
 import { notifiTorchOff, notifiTorchOn, notifyOnCamera } from '../../Utils/UtilsGenerals';
 import { notifySound, notifySuccess, notifyWelcome } from '../../Utils/UtilsProducts';
-import Camera from '../Scanner/Camera';
+import CameraScreen from '../Scanner/CameraScreen';
 import ConfirmScan from '../Scanner/ConfirmScan';
 import FooterScanner from '../Scanner/FooterScanner';
 
@@ -21,6 +21,7 @@ class Scanner extends React.Component {
       step: 0,
       codeManual: false,
       mute: true,
+      scanned: false,
     };
   }
 
@@ -40,10 +41,6 @@ class Scanner extends React.Component {
   };
 
   componentDidMount() {
-    console.log('manualCode', this.props.scanner.codeManual);
-    this.props.navigation.setParams({
-      handleTorch: this.handleTorch,
-    });
     notifySuccess().then(() => {
       notifyWelcome();
     });
@@ -53,7 +50,7 @@ class Scanner extends React.Component {
 
   componentWillUnmount() {
     this.backHandler.remove();
-    //BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    BackHandler.removeEventListener("hardwareBackPress", onBackPress);
   }
 
   handleTorch = () => {
@@ -142,7 +139,11 @@ class Scanner extends React.Component {
 
   ConfirmScan = () => {
     notifyOnCamera().then(() => {
+      console.log("this.props.scanner.manualCode: ");
       this.setState({ step: 1 });
+    }).catch((err) => {
+
+      console.error("ERROR notifyOnCamera: ", err);
     });
   };
 
@@ -156,9 +157,29 @@ class Scanner extends React.Component {
     notifySound(!this.state.mute);
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.scanner.torch != this.props.scanner.torch) {
+
+      if (this.props.scanner.torch) {
+
+        if (this.state.step == 0) {
+          this.setState({ step: 1 });
+        }
+        setTimeout(() => {
+          this.setState({ torchOn: this.props.scanner.torch });
+        }, 1000);
+
+        notifiTorchOn();
+
+      } else {
+        notifiTorchOff();
+        this.setState({ torchOn: this.props.scanner.torch });
+      }
+    }
+  }
+
   render() {
     const { step, torchOn } = this.state;
-    console.log(this.props.scanner);
     const stylesCamera = StyleSheet.create({
       container: {
         flex: 1,
@@ -186,12 +207,16 @@ class Scanner extends React.Component {
         {step == 0 && <ConfirmScan ConfirmScan={this.ConfirmScan} />}
 
         {step == 1 && (
-          <Camera
+          <CameraScreen
             torchOn={torchOn}
             codeManual={this.changeCodeManual}
             visibleCodeManual={this.props.scanner.manualCode}
             props={this.props}
             mute={this.state.mute}
+            scanned={this.state.scanned}
+            setScanned={(scanned) => {
+              this.props.dispatch(set_scanned(scanned));
+            }}
           />
         )}
 
@@ -206,8 +231,10 @@ class Scanner extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return state;
-};
+// Mapeando el estado de Redux a las props del DrawerNavigator
+const mapStateToProps = (state) => ({
+  state: state,
+});
 
+// Conectando el DrawerNavigator con Redux
 export default connect(mapStateToProps)(Scanner);

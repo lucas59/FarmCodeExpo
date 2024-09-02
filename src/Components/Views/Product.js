@@ -9,22 +9,22 @@ import IconFontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Speech from 'expo-speech';
 
-import LogoRonda from '../../../assets/logo-ronda.svg';
+import LogoRonda from '../../../assets/logo-ronda.png';
 import CardPreview from '../Product/CardPreview';
 import { findProduct, findProductFromKit } from '../../Utils/UtilsSession';
 import { notifyErrorServerConect, notifySuccess } from '../../Utils/UtilsProducts';
 import { connect } from 'react-redux';
-import { set_manual_code } from '../../Redux/Actions/ScannerActions';
+import { set_manual_code, set_scanned } from '../../Redux/Actions/ScannerActions';
 import { BackHandler } from 'react-native';
 
 class Product extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      product: props.navigation.getParam('product'),
-      scanner: props.navigation.getParam('scan'),
-      parent: props.navigation.getParam('parent'),
-      mute: props.navigation.getParam('mute'),
+      product: props.route.params.product,  // Reemplaza getParam por route.params
+      scanner: props.route.params.scan,
+      parent: props.route.params.parent,
+      mute: props.route.params.mute,
       loading: false,
       kitProducts: [],
       aditionInfoSize: 0,
@@ -39,7 +39,9 @@ class Product extends React.Component {
   }
 
   backAction() {
-    this.goBack();
+
+    // if (parent) this.props.navigation.navigate('Scanner', { step: 1 });
+    // this.goBack()
     return true;
   }
 
@@ -121,21 +123,9 @@ class Product extends React.Component {
     };
   };
 
-  goBack = () => {
-    const { parent } = this.state;
-    mute();
-    notifyOnCamera().then(() => {
-      if (parent) {
-        this.props.navigation.navigate('Scanner', { step: 1 });
-      } else {
-        this.props.navigation.navigate('Scanner', { step: 1 });
-      }
-    });
-  };
-
   goToParent = () => {
     mute();
-    this.props.navigation.goBack();
+    // this.props.navigation.goBack();
   };
 
   toProductDetails = (product) => {
@@ -173,12 +163,22 @@ class Product extends React.Component {
       });
   };
 
+  goBack = () => {
+    const { parent } = this.state;
+    this.props.dispatch(set_scanned(false));
+    mute();
+    notifyOnCamera().then(() => {
+      if (parent) {
+        this.props.navigation.navigate('Scanner', { step: 1, scanned: false });
+      } else {
+        this.props.navigation.navigate('Scanner', { step: 1, scanned: false });
+      }
+    });
+  };
+
   render() {
     const { product, parent, loading, kitProducts, aditionInfoSize } = this.state;
-    console.log(product.atributosBasicos.contenidoPorUso);
     let block = loading ? 'none' : 'auto';
-
-    console.log('aditionInfoSize ', aditionInfoSize);
     return (
       <View pointerEvents={block} style={{ flex: 1 }}>
         <ScrollView>
@@ -230,7 +230,7 @@ class Product extends React.Component {
             >
               <MaterialCommunityIcons size={40} color="#0e2a47" name="medical-bag" />
               <ItemInfo value={product.atributosBasicos.descripcion} />
-              {console.log('kIT ', product.kitPromocional)}
+
               {(product.kitPromocional.length === 0 || parent) && (
                 <>
                   <ItemInfo value={product.formaFarmaceutica} title={'Presentación: '} />

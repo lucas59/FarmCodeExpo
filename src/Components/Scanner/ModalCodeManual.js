@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { Button, Input } from 'react-native-elements';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 export default function ModalCodeManual(props) {
   const [code, setCode] = useState(null);
@@ -17,8 +18,13 @@ export default function ModalCodeManual(props) {
     }
   };
 
+  const handleOutsidePress = () => {
+    props.onClose(); // función que cierra el modal
+  };
+
   if (props.visible) {
     return (
+
       <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
         <View
           style={{
@@ -53,10 +59,14 @@ export default function ModalCodeManual(props) {
               value={code}
               onChangeText={(value) => setCode(value)}
             />
-            <Button title="Buscar" onPress={onSearch} style={{ width: 150 }} type="outline" />
+            <View style={{ flexDirection: 'row', justifyContent: 'center', width: '100%', gap: 10 }}>
+              <Button title="Cerrar" onPress={props.onClose} color="error" type="outline" />
+              <Button title="Buscar" onPress={onSearch} />
+            </View>
           </View>
         </View>
       </View>
+
     );
   } else {
     return <View />;

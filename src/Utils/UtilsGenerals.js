@@ -1,6 +1,8 @@
 import { Audio } from 'expo-av';
 import * as Speech from 'expo-speech';
-import { AccessibilityInfo, Alert, AsyncStorage, Vibration } from 'react-native';
+import { AccessibilityInfo, Alert, Vibration } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { arre } from './jsonPruebas';
 
 export async function searchProduct(code, type) {
@@ -53,9 +55,9 @@ export async function readProduct(parent, json) {
 
         Speech.speak(
           'Contenido neto: ' +
-            json.atributosBasicos.contenidoNeto.valor +
-            '  ' +
-            json.atributosBasicos.contenidoNeto.unidad,
+          json.atributosBasicos.contenidoNeto.valor +
+          '  ' +
+          json.atributosBasicos.contenidoNeto.unidad,
           {
             language: 'es-419',
             _voiceIndex: 100,
@@ -95,13 +97,13 @@ export async function readProduct(parent, json) {
 
           Speech.speak(
             'Concentración: ' +
-              val.concentracion.valor +
-              ' ' +
-              val.concentracion.unidad +
-              ' En ' +
-              val.enMedio.valor +
-              '  ' +
-              val.enMedio.unidad,
+            val.concentracion.valor +
+            ' ' +
+            val.concentracion.unidad +
+            ' En ' +
+            val.enMedio.valor +
+            '  ' +
+            val.enMedio.unidad,
             {
               language: 'es-419',
               _voiceIndex: 100,

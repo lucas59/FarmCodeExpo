@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, AsyncStorage } from 'react-native';
+import { View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Text } from 'react-native-elements';
 import { SkypeIndicator } from 'react-native-indicators';
 import LogoRonda from '../../../assets/logo-ronda.svg';
@@ -7,24 +8,33 @@ import { notifyConditionsShow } from '../../Utils/UtilsGenerals';
 
 export default class Home extends React.Component {
   componentDidMount() {
-    var cont = 0;
+    let cont = 0;
     this._interval = setInterval(async () => {
-      cont++;
-      if (cont == 3) {
+      try {
         let condition = await AsyncStorage.getItem('conditions');
-        if (condition) {
-          this.props.navigation.replace('Scanner');
-        } else {
-          notifyConditionsShow().then(() => {
-            this.props.navigation.replace('Conditions');
-          });
+        console.log("########");
+        console.log("condition: ", condition);
+        cont++;
+        if (cont === 3) {
+          clearInterval(this._interval); // Detiene el intervalo después de 3 ejecuciones
+          if (condition) {
+            this.props.navigation.navigate('Escaner', {
+              screen: 'Scanner',
+            });
+          } else {
+            notifyConditionsShow().then(() => {
+              this.props.navigation.replace('Conditions');
+            });
+          }
         }
+      } catch (error) {
+        console.error(error);
       }
     }, 500);
   }
 
   componentWillUnmount() {
-    clearInterval(this._interval);
+    clearInterval(this._interval); // Asegura que el intervalo se detiene cuando el componente se desmonta
   }
 
   static navigationOptions = ({ navigation }) => ({

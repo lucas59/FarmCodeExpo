@@ -1,10 +1,13 @@
 import React from 'react';
-import { Image, Text, View, AsyncStorage } from 'react-native';
+import { Image, Text, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button } from 'react-native-elements';
 import { StackActions } from '@react-navigation/native';
 import { styles } from '../../Styles/StylesGenerals';
 import { notifyConditionsHidden, notifyConditionsShow } from '../../Utils/UtilsGenerals';
 import OverlayTermsAndConditions from '../Conditions/OverlayTermsAndConditions';
+import logo from '../../../assets/logo-ronda.png';
+
 export default class Conditions extends React.Component {
   constructor(props) {
     super(props);
@@ -64,7 +67,7 @@ export default class Conditions extends React.Component {
               Powered by{' '}
             </Text>
             <Image
-              source={require('../../../assets/logo-ronda.png')}
+              source={logo}
               style={{ width: 200, height: 60, marginVertical: 10 }}
             />
           </View>

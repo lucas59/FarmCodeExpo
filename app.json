@@ -1,11 +1,20 @@
 {
   "expo": {
     "name": "Etiqueta Virtual",
-    "slug": "FarmCode",
+    "slug": "farmcode",
+    "splash": {
+      "image": "./assets/splash1.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "20d57323-820c-49bd-85bb-6732c30bb4b9"
+      }
+    },
     "platforms": ["ios", "android", "web"],
-    "version": "5.4.1",
+    "version": "6.0.0",
     "jsEngine": "hermes",
-    "entryPoint": "./App.js",
     "sdkVersion": "51.0.0",
     "orientation": "portrait",
     "icon": "./assets/solidIcon.png",
@@ -24,7 +33,7 @@
     },
     "android": {
       "package": "com.etiqueta.virtual",
-      "versionCode": 9
+      "versionCode": 10
     },
     "packagerOpts": {
       "config": "metro.config.js",

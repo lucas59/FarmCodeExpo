@@ -1,38 +1,59 @@
-import { BarCodeScanner } from 'expo-barcode-scanner';
-import { Camera as Cam } from 'expo-camera';
+// import { Constants, requestPermissionsAsync } from 'expo-barcode-scanner';
+import { CameraView } from 'expo-camera';
+
+import { FlashMode } from 'expo-camera/build/legacy/Camera.types';
 import * as Speech from 'expo-speech';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
-import { notifyError, notifyErrorServerConect, notifySuccess } from '../../Utils/UtilsProducts';
+import { notifyError, notifyErrorServerConect } from '../../Utils/UtilsProducts';
 import { findProduct } from '../../Utils/UtilsSession';
 import ModalCodeManual from './ModalCodeManual';
+import { set_manual_code } from '../../Redux/Actions/ScannerActions';
+import { Constants, requestPermissionsAsync } from 'expo-barcode-scanner';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 
-export default function Camera(props) {
-  const [hasPermission, setHasPermission] = useState(null);
+export default function CameraScreen(props) {
+  const [hasPermission, setHasPermission] = useState('');
   const [scanned, setScanned] = useState(false);
   const [modalNotProduct, setModalNotProduct] = useState(false);
   const manualCode = useSelector((state) => state.scanner.manualCode);
-
-  console.log('manualCode: ', manualCode);
+  const navigation = useRoute();
 
   useEffect(() => {
     (async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
+      try {
+        const { status } = await requestPermissionsAsync();
+        const hasPermission = status === 'granted';
+        console.log('hasPermission: ', hasPermission);
+
+        setHasPermission(hasPermission);
+      } catch (error) {
+        console.error(error);
+      }
     })();
     props.props.navigation.addListener('willFocus', handleScanner, true);
   }, []);
-
+  console.log('SCANNED: ', scanned);
   const handleScanner = async () => {
     await setScanned(false);
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log('FOCUSS');
+      setScanned(false);
+    }, []),
+  );
+
   const handleBarCodeScanned = async ({ type, data }) => {
+    if (scanned) {
+      return;
+    }
+
     setScanned(true);
-    
     if (data) {
       findProduct(data)
         .then((response) => {
@@ -77,6 +98,12 @@ export default function Camera(props) {
     return <Text>No access to camera</Text>;
   }
 
+  const onCloseManualCodeModal = () => {
+    this.props.dispatch(set_manual_code(false));
+  };
+
+  console.log(props.torchOn == true ? 'on' : 'off');
+
   return (
     <View
       style={{
@@ -85,22 +112,24 @@ export default function Camera(props) {
         justifyContent: 'flex-end',
       }}
     >
-      <Cam
+      <CameraView
+        onBarcodeScanned={handleBarCodeScanned}
         style={StyleSheet.absoluteFill}
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        onBarCodeScanned={handleBarCodeScanned}
         autoFocus={'on'}
-        flashMode={props.torchOn == true ? Cam.Constants.FlashMode.torch : Cam.Constants.FlashMode.off}
+        enableTorch={props.torchOn}
+        flash={props.torchOn == true ? 'on' : 'off'}
+        flashMode={props.torchOn == true ? 'on' : 'off'}
         barCodeScannerSettings={{
           barcodeTypes: [
-            BarCodeScanner.Constants.Type.ean8,
-            BarCodeScanner.Constants.Type.ean13,
-            BarCodeScanner.Constants.Type.ean14,
-            BarCodeScanner.Constants.Type.upc12,
-            BarCodeScanner.Constants.Type.upc7,
+            Constants.Type.ean8,
+            Constants.Type.ean13,
+            Constants.Type.ean14,
+            Constants.Type.upc12,
+            Constants.Type.upc7,
           ],
         }}
       />
-
       <Modal
         animationIn={'bounceIn'}
         animationOut={'bounceOut'}
@@ -146,7 +175,7 @@ export default function Camera(props) {
                 color: '#dc3545',
                 marginVertical: 20,
               }}
-              name="ios-close-circle-outline"
+              name="close"
               color="white"
               size={100}
             ></Icon>
@@ -158,7 +187,12 @@ export default function Camera(props) {
         </View>
       </Modal>
 
-      <ModalCodeManual visible={manualCode} onSearch={handleBarCodeScanned} codeManual={props.codeManual} />
+      <ModalCodeManual
+        onClose={props.codeManual}
+        visible={manualCode}
+        onSearch={handleBarCodeScanned}
+        codeManual={props.codeManual}
+      />
     </View>
   );
 }

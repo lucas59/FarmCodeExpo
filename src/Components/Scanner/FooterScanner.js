@@ -55,7 +55,7 @@ export default class FooterScanner extends React.Component {
               >
                 Silenciar
               </Text>
-              <Icon style={{ marginLeft: 10, color: 'white' }} size={30} name="md-volume-off" />
+              <Icon style={{ marginLeft: 10, color: 'white' }} size={30} name="volume-mute" />
             </React.Fragment>
           ) : (
             <React.Fragment>
@@ -69,7 +69,7 @@ export default class FooterScanner extends React.Component {
               >
                 Activar volumen
               </Text>
-              <Icon style={{ marginLeft: 10, color: 'white' }} size={30} name="md-volume-high" />
+              <Icon style={{ marginLeft: 10, color: 'white' }} size={30} name="volume-high" />
             </React.Fragment>
           )}
         </TouchableOpacity>
