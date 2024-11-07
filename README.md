@@ -58,7 +58,7 @@ Etiqueta Virtual is a mobile application built with Expo, designed to scan and m
 
 ## Project Identifiers
 
-- **Expo Project ID:** 20323323-860c-49bd-25bb-6732c30bb4b9
+- **Expo Project ID:** 20d57323-820c-49bd-85bb-6732c30bb4b9
 - **Project Slug:** farmcode
 
 ## Key Features
@@ -67,22 +67,33 @@ Etiqueta Virtual is a mobile application built with Expo, designed to scan and m
 - Authentication System
 - Virtual Label Management
 
-## Transferring Project to Another Expo Account
+## Installation and Setup
 
-To transfer this project to a different Expo account, follow these steps:
+### Prerequisites
 
-1. Create a new project in your target Expo account.
-2. Get the new project ID from the Expo dashboard.
-3. Update the project ID in `app.json`:
+- Make sure you have [Node.js](https://nodejs.org/) and [Expo CLI](https://docs.expo.dev/workflow/expo-cli/) installed.
 
-   ```json
-   {
-     "expo": {
-       "extra": {
-         "eas": {
-           "projectId": "YOUR-NEW-PROJECT-ID"
-         }
-       }
-     }
-   }
-   ```
+### Install Dependencies
+
+To install all necessary dependencies, run:
+
+```bash
+npm install
+```
+
+### Run Application
+
+To run the app locally with Expo, use:
+
+```bash
+expo start
+```
+
+### Build the Application
+
+To build the app for production, run:
+
+```bash
+eas build --platform android
+eas build --platform ios
+```
