@@ -97,3 +97,29 @@ To build the app for production, run:
 eas build --platform android
 eas build --platform ios
 ```
+
+## Key Features
+
+- Barcode Scanning
+- Authentication System
+- Virtual Label Management
+
+## Transferring Project to Another Expo Account
+
+To transfer this project to a different Expo account, follow these steps:
+
+1. Create a new project in your target Expo account.
+2. Get the new project ID from the Expo dashboard.
+3. Update the project ID in `app.json`:
+
+   ```json
+   {
+     "expo": {
+       "extra": {
+         "eas": {
+           "projectId": "YOUR-NEW-PROJECT-ID"
+         }
+       }
+     }
+   }
+   ```
